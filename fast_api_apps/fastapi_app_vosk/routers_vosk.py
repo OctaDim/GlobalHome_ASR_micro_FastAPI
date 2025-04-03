@@ -6,11 +6,11 @@ from starlette.responses import JSONResponse
 from configs.settings import BASE_DIR
 from data_incoming.incoming_wav_file_paths.incoming_wav_paths import (
     wav_file_paths)
-from fast_api_source.app_auth.pydantic_auth import (
+from fast_api_apps.fastapi_app_auth.pydantic_auth import (
     LogPassPydantic)
 from stt_VOSK.utils_vosk.funcs_vosk import get_str_from_wav_path_vosk
 from stt_VOSK.utils_vosk.init_model_vosk import vosk_model_obj
-from stt_WHISPER.utils_WHISPER.init_model_whisper import (
+from stt_WHISPER.utils_whisper.init_model_whisper import (
     whisper_model_obj)
 from utilities_common.normalized_path import get_all_dirs_norm_path
 
