@@ -1,0 +1,10 @@
+https://alphacephei.com/vosk/models
+https://alphacephei.com/vosk/install
+
+pip install vosk
+or:
+pip3 install vosk
+
+download models
+
+define path to model in the code
