@@ -1,3 +1,5 @@
+import os
+
 from configs.settings import API_CONFIGS, BASE_DIR
 from configs.console_colors import CONSOLE_COLORS
 from stt_VOSK.funcs_vosk import get_str_from_wav_vosk
@@ -29,11 +31,12 @@ if not audio_files_paths:
           f"full_dir_path: {full_dir_path}\n")
 
 for cur_audio_path in audio_files_paths:
-    print(f"{'#' * 100}")
+    print(f"{'#' * 95}")
     if not cur_audio_path:
         print(f"Full file path not found [ERROR]: {cur_audio_path}\n")
         continue
 
+    new_wav_full_path = None
     if cur_audio_path.endswith(".mp3"):
         new_wav_full_path = convert_save_mp3_to_wav(
             mp3_full_path=cur_audio_path,
@@ -49,14 +52,17 @@ for cur_audio_path in audio_files_paths:
                                    log_wav_path=True,
                                    log_wav_duration=True)
 
+    if new_wav_full_path and os.path.exists(new_wav_full_path):
+        os.remove(new_wav_full_path)
 
     if API_CONFIGS.INIT_VOSK_PUNCTUATOR_MODEL and vosk_punctuator_inst:
         try:
-            punctuated_phrase = vosk_punctuator_inst.recase(phrase)
+            new_phrase = vosk_punctuator_inst.recase(phrase)
             print(f"Punctuation [OK]: "
-                  f"punctuated_phrase: {punctuated_phrase}, phrase: {phrase}\n")
+                  f"new_phrase: {new_phrase}, phrase: {phrase}\n")
         except Exception as error:
-            print(f"Punctuation [ERROR]: error: {error}, phrase: {phrase}\n")
+            print(f"Punctuation [ERROR]: "
+                  f"error: {error}, phrase: {phrase}\n")
 
     green_color, reset_color = CONSOLE_COLORS.GREEN, CONSOLE_COLORS.RESET
     print(f"Recognized Phrase: {green_color}{phrase}{reset_color}\n")
