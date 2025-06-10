@@ -1,0 +1,7 @@
+IMPORTANT:
+pip install openai-whisper (try first, if not working, execute
+pip install whisper also in addition to the first step)
+
+pip uninstall numpy
+pip install numpy==2.1.0
+(newer version is not acceptable)
