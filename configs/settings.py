@@ -18,14 +18,11 @@ API_DEFAULT_PASSWORD = os.getenv("API_PASSWORD")
 
 @dataclass
 class VOSK_MODEL_PATHS:
-    BIG_3_5GB_RU_0_10: str = "stt_VOSK/models_vosk/vosk-model-ru-0.10"
-    BIG_2_5GB_RU_0_22: str = "stt_VOSK/models_vosk/vosk-model-ru-0.22"
-    SMALL_87MB_RU_0_22: str = "stt_VOSK/models_vosk/vosk-model-small-ru-0.22"
-
-
-@dataclass
-class VOSK_PUNCTUATION_MODEL_PATHS:
-    RECASEPUNC_2GB: str = "stt_VOSK/models_vosk/vosk-recasepunc-ru-0.22"
+    BIG_3_5GB_RU_010: str = "stt_VOSK/models_vosk/vosk-model-ru-0.10"
+    BIG_2_5GB_RU_022: str = "stt_VOSK/models_vosk/vosk-model-ru-0.22"
+    BIG_3_5GB_RU_042: str = "stt_VOSK/models_vosk/vosk-model-ru-0.42"
+    SMALL_87MB_RU_022: str = "stt_VOSK/models_vosk/vosk-model-small-ru-0.22"
+    RECASEPUNC_2GB_RU_022: str = "stt_VOSK/models_vosk/vosk-recasepunc-ru-0.22"
 
 
 @dataclass
@@ -48,19 +45,19 @@ class API_CONFIGS:
     BASE_HOST: str = API_ENV_HOST
     BASE_PORT: int = API_ENV_PORT
 
-    INIT_VOSK_MODEL: bool = True
-    # INIT_VOSK_MODEL: bool = False
-    VOSK_MODEL_PATH: str = VOSK_MODEL_PATHS.BIG_3_5GB_RU_0_10
+    # INIT_VOSK_MODEL: bool = True
+    INIT_VOSK_MODEL: bool = False
+    VOSK_MODEL_PATH: str = VOSK_MODEL_PATHS.BIG_3_5GB_RU_042
     VOSK_AUDIO_FRAME_RATE: int = 16000
     VOSK_AUDIO_CHANNELS_NUM: int = 1
 
     # INIT_VOSK_PUNCTUATOR_MODEL = True
     INIT_VOSK_PUNCTUATOR_MODEL = False
-    VOSK_PUNCTUATOR_MODEL_PATH: str = VOSK_PUNCTUATION_MODEL_PATHS.RECASEPUNC_2GB
+    VOSK_PUNCTUATOR_MODEL_PATH: str = VOSK_MODEL_PATHS.RECASEPUNC_2GB_RU_022
 
-    INIT_WHISPER_MODEL: bool = False
-    # INIT_WHISPER_MODEL: bool = True
-    WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.SMALL
+    # INIT_WHISPER_MODEL: bool = False
+    INIT_WHISPER_MODEL: bool = True
+    WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.LARGE
     WHISPER_AUDIO_FRAME_RATE: int = 16000
     WHISPER_AUDIO_CHANNELS_NUM: int = 1
 
