@@ -232,4 +232,5 @@ actions_results
 ___*.*
 
 
-/*vosk-models*/*
+stt_VOSK/models_vosk/*
+data_outgoing/*
