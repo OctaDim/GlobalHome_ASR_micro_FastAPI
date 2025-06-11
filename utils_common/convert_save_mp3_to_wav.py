@@ -3,9 +3,9 @@ import os
 from pydub import AudioSegment
 
 
-def convert_save_mp3_to_wav(mp3_full_path: str,
-                            wav_frame_rate: int = 16000,
-                            wav_channels: int = 1) -> str | None:
+def convert_and_save_mp3_to_wav(mp3_full_path: str,
+                                wav_frame_rate: int = 16000,
+                                wav_channels: int = 1) -> str | None:
     cur_dir_name = os.path.dirname(mp3_full_path)
     cur_mp3_name_with_ext = os.path.basename(mp3_full_path)
     cur_mp3_name_no_ext = os.path.splitext(cur_mp3_name_with_ext)[0]
