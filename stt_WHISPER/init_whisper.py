@@ -2,6 +2,7 @@ import torch
 import whisper
 from whisper import Whisper
 
+from configs.console_colors import CONSOLE_COLORS
 from configs.settings import API_CONFIGS
 from utils_common.exec_time_decorator import execution_time_decorator
 
@@ -12,7 +13,9 @@ from utils_common.exec_time_decorator import execution_time_decorator
                           note="WHISPER Model initialization time")
 def initialise_whisper_model(model_name: str) -> Whisper:
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"device: {device}")
+    green_color = CONSOLE_COLORS.BRIGHT_GREEN
+    reset_color = CONSOLE_COLORS.RESET
+    print(f"Device: {green_color}{device.upper()}{reset_color}")
     model = whisper.load_model(name=model_name, device=device)
     return model
 
