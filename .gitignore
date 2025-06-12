@@ -230,7 +230,10 @@ zNotes*/
 
 actions_results
 ___*.*
-
+___temp/
+___temporary/
+___Temp/
+___Temporary/
 
 stt_VOSK/models_vosk/*
 data_outgoing/*

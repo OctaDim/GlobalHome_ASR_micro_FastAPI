@@ -12,8 +12,8 @@ normal_env_path = os.path.normpath(full_path)
 env = load_dotenv(normal_env_path)
 API_ENV_HOST: str = os.getenv("API_HOST")
 API_ENV_PORT: int = int(os.getenv("API_PORT"))
-API_DEFAULT_USERNAME = os.getenv("API_USERNAME")
-API_DEFAULT_PASSWORD = os.getenv("API_PASSWORD")
+API_ENV_USERNAME = os.getenv("API_USERNAME")
+API_ENV_PASSWORD = os.getenv("API_PASSWORD")
 
 
 @dataclass
@@ -52,6 +52,7 @@ class API_CONFIGS:
     VOSK_AUDIO_CHANNELS_NUM: int = 1
     VOSK_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
     VOSK_ALLOWED_AUDIO_EXTENSIONS: tuple = (".wav", ".mp3",)
+    VOSK_API_URL_BASE_NAME = "vosk"
 
     # INIT_VOSK_PUNCTUATOR_MODEL = True
     INIT_VOSK_PUNCTUATOR_MODEL = False
@@ -59,10 +60,12 @@ class API_CONFIGS:
 
     INIT_WHISPER_MODEL: bool = True
     # INIT_WHISPER_MODEL: bool = False
-    WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.LARGE
+    WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.TINY
     WHISPER_AUDIO_FRAME_RATE: int = 16000
     WHISPER_AUDIO_CHANNELS_NUM: int = 1
     WHISPER_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
     WHISPER_ALLOWED_AUDIO_EXTENSIONS: tuple = (".wav", ".mp3",)
+    WHISPER_API_URL_BASE_NAME = "whisper"
 
-    INCOMING_AUDIO_FILES_PATH: str = "data_incoming/mp3_samples_KIROV"
+    SCRIPT_IN_AUDIO_FILES_PATH: str = "data_incoming/mp3_samples_KIROV"
+    API_IN_AUDIO_FILES_PATH: str = "data_incoming/temporary_files_API"
