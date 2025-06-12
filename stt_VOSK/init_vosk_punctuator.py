@@ -2,7 +2,7 @@ from vosk import Model
 
 from configs.settings import API_CONFIGS, BASE_DIR
 from utils_common.exec_time_decorator import execution_time_decorator
-from utils_common.normalized_path import get_all_dirs_norm_path
+from utils_common.normalized_path import get_full_dir_normal_path
 
 
 class HardSingletonPunctuatorVOSK(Model):
@@ -58,7 +58,7 @@ def init_vosk_punctuator_model(model_path: str,
 
 
 if API_CONFIGS.INIT_VOSK_PUNCTUATOR_MODEL:
-    vosk_punctuator_model_path = get_all_dirs_norm_path(
+    vosk_punctuator_model_path = get_full_dir_normal_path(
         [BASE_DIR, API_CONFIGS.VOSK_PUNCTUATOR_MODEL_PATH])
 
     vosk_punctuator_model_instance = init_vosk_punctuator_model(

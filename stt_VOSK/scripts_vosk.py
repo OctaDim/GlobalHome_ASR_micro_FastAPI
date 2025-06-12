@@ -5,25 +5,25 @@ from configs.settings import API_CONFIGS, BASE_DIR
 from stt_VOSK.funcs_vosk import get_str_from_wav_vosk
 from stt_VOSK.init_vosk_punctuator import vosk_punctuator_model_instance
 from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav
-from utils_common.get_dir_file_names import get_directory_file_names
+from utils_common.dir_files_names_paths import get_dir_files_only_names
 from utils_common.normalized_path import (
-    get_all_dirs_norm_path, get_full_file_normal_path)
+    get_full_dir_normal_path, get_full_file_normal_path)
 
 
 def execute_scripts_vosk():
     from stt_VOSK.init_vosk import vosk_model_instance
     vosk_punctuator_inst = vosk_punctuator_model_instance
 
-    full_dir_path = get_all_dirs_norm_path(
-        all_dirs_paths=[BASE_DIR, API_CONFIGS.INCOMING_AUDIO_FILES_PATH])
+    full_dir_path = get_full_dir_normal_path(
+        all_dir_str_parts=[BASE_DIR, API_CONFIGS.SCRIPT_IN_AUDIO_FILES_PATH])
 
-    audio_file_names = get_directory_file_names(full_dir_path=full_dir_path)
+    audio_file_names = get_dir_files_only_names(full_dir_path=full_dir_path)
 
     audio_files_paths = []
     for audio_file_name in audio_file_names:
         full_file_path = get_full_file_normal_path(
-            all_dirs_paths=[BASE_DIR, API_CONFIGS.INCOMING_AUDIO_FILES_PATH],
-            file_name=audio_file_name)
+            all_dir_str_parts=[BASE_DIR, API_CONFIGS.SCRIPT_IN_AUDIO_FILES_PATH],
+            file_name_with_ext=audio_file_name)
         audio_files_paths.append(full_file_path)
 
     if not audio_files_paths:
@@ -67,7 +67,7 @@ def execute_scripts_vosk():
                 print(f"Punctuation [ERROR]: "
                       f"error: {error}, phrase: {phrase}\n")
 
-        green_color, reset_color = CONSOLE_COLORS.GREEN, CONSOLE_COLORS.RESET
+        green_color, reset_color = CONSOLE_COLORS.BRIGHT_GREEN, CONSOLE_COLORS.RESET
         print(f"{counter}/{total_files} Recognized Phrase: "
               f"{green_color}{phrase}{reset_color}\n")
 
