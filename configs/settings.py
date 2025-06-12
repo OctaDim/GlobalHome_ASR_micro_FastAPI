@@ -47,7 +47,7 @@ class API_CONFIGS:
 
     INIT_VOSK_MODEL: bool = True
     # INIT_VOSK_MODEL: bool = False
-    VOSK_MODEL_PATH: str = VOSK_MODEL_PATHS.SMALL_87MB_RU_022
+    VOSK_MODEL_PATH: str = VOSK_MODEL_PATHS.BIG_3_5GB_RU_010
     VOSK_AUDIO_FRAME_RATE: int = 16000
     VOSK_AUDIO_CHANNELS_NUM: int = 1
     VOSK_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
@@ -60,7 +60,7 @@ class API_CONFIGS:
 
     INIT_WHISPER_MODEL: bool = True
     # INIT_WHISPER_MODEL: bool = False
-    WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.TINY
+    WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.LARGE
     WHISPER_AUDIO_FRAME_RATE: int = 16000
     WHISPER_AUDIO_CHANNELS_NUM: int = 1
     WHISPER_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
