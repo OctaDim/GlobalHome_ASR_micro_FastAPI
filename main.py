@@ -4,12 +4,18 @@ from fastapi import FastAPI
 from configs.settings import API_CONFIGS
 from fast_api.app_root_url.router_main import router_root_url
 from fast_api.app_vosk.routers_vosk import router_vosk
+from fast_api.app_whisper.routers_whisper import router_whisper
 
+routers_list = [
+    router_root_url,
+    router_vosk,
+    router_whisper
+]
 
 def create_fastapi_application():
     fastapi_app = FastAPI()
-    fastapi_app.include_router(router_root_url)
-    fastapi_app.include_router(router_vosk)
+    for cur_router in routers_list:
+        fastapi_app.include_router(cur_router)
     return fastapi_app
 
 
