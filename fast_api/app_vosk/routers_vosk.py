@@ -1,5 +1,6 @@
 import asyncio
 import os
+from datetime import datetime
 from functools import partial
 from typing import Annotated
 
@@ -8,15 +9,16 @@ from fastapi.responses import JSONResponse
 
 from configs.console_colors import CONSOLE_COLORS
 from configs.settings import API_CONFIGS, BASE_DIR
-from fast_api.app_vosk.funcs_vosk import async_remove_file
 from stt_VOSK.funcs_vosk import get_str_from_wav_vosk
 from stt_VOSK.init_vosk import vosk_model_instance
+from utils_async_common.async_remove_file_by_path import async_remove_file
 from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav
 from utils_common.normalized_path import (
-    get_all_dirs_norm_path, get_full_file_normal_path)
+    get_full_dir_normal_path, get_full_file_normal_path)
 
 
-router_vosk = APIRouter(prefix="/vosk", tags=["VOSK"])
+vosk_base_url_name = API_CONFIGS.VOSK_API_URL_BASE_NAME
+router_vosk = APIRouter(prefix=f"/{vosk_base_url_name}", tags=["VOSK"])
 
 
 @router_vosk.post(path="/transcribe/")
@@ -43,19 +45,20 @@ async def vosk_transcribe_audio_to_text(
         raise HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
                             detail=log_text)
 
-    dir_full_path = get_all_dirs_norm_path(
-        all_dirs_paths=[BASE_DIR, API_CONFIGS.INCOMING_AUDIO_FILES_PATH])
+    dir_full_path = get_full_dir_normal_path(
+        all_dir_str_parts=[BASE_DIR, API_CONFIGS.API_IN_AUDIO_FILES_PATH])
     os.makedirs(dir_full_path, exist_ok=True)
 
     new_audio_full_path = get_full_file_normal_path(
-        all_dirs_paths=[BASE_DIR, API_CONFIGS.INCOMING_AUDIO_FILES_PATH],
-        file_name=file.filename)
+        all_dir_str_parts=[BASE_DIR, API_CONFIGS.API_IN_AUDIO_FILES_PATH],
+        file_name_with_ext=file.filename)
 
     with open(new_audio_full_path, "wb") as new_audio_file:
         upload_file_content = await file.read()
         new_audio_file.write(upload_file_content)
 
-    if (file.content_type in ["audio/mpeg", "audio/mp3"]
+    # Create new .wav file if .mp3 (audio/mp3, audio/mpeg)
+    if (file.content_type in ["audio/mpeg", "audio/mp3",]
             and file.filename.lower().endswith(".mp3")):
         prepared_sync_func = partial(
             convert_and_save_mp3_to_wav,
@@ -63,30 +66,34 @@ async def vosk_transcribe_audio_to_text(
             wav_frame_rate=API_CONFIGS.VOSK_AUDIO_FRAME_RATE,
             wav_channels=API_CONFIGS.VOSK_AUDIO_CHANNELS_NUM)
         new_wav_full_path = await asyncio.to_thread(prepared_sync_func)
-    else:
+    else:  # Use existing .wav file
         new_wav_full_path = new_audio_full_path
 
+    datetime_start = datetime.now()
     prepared_sync_func = partial(get_str_from_wav_vosk,
                                  model_obj=vosk_model_instance,
                                  full_file_path=new_wav_full_path,
                                  log_wav_path=True,
                                  log_wav_duration=True)
-    phrase = await asyncio.to_thread(prepared_sync_func)
+    phrase = await asyncio.to_thread(prepared_sync_func)  # Executing prepared func
+    recognition_time = (datetime.now() - datetime_start).total_seconds()
+    recognition_time = round(recognition_time, 1)
 
     await async_remove_file(new_audio_full_path)
     if new_audio_full_path != new_wav_full_path:
         await async_remove_file(new_wav_full_path)
 
-    green_color, reset_color = CONSOLE_COLORS.GREEN, CONSOLE_COLORS.RESET
-    print(f"Recognized Phrase: {green_color}{phrase}{reset_color}\n")
+    blue_color, reset_color = CONSOLE_COLORS.BLUE, CONSOLE_COLORS.RESET
+    print(f"Recognized Phrase: {blue_color}{phrase}{reset_color}\n")
     return JSONResponse(
-        content={"message": "Audio file transcribed [OK]",
+        content={"message": "VOSK: Audio file transcribed [OK]",
                  "filename": file.filename,
-                 "content_type": file.content_type,
-                 "model_init": API_CONFIGS.INIT_VOSK_MODEL,
-                 "model_path": API_CONFIGS.VOSK_MODEL_PATH,
+                 "content type": file.content_type,
+                 "model init": API_CONFIGS.INIT_VOSK_MODEL,
+                 "model path": API_CONFIGS.VOSK_MODEL_PATH,
+                 "recognition time": recognition_time,
                  "phrase": phrase,
                  # TODO: "username": username,
                  },
-        status_code=status.HTTP_202_ACCEPTED,
+        status_code=status.HTTP_201_CREATED,
     )
