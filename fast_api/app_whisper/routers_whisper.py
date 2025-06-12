@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 
 from configs.console_colors import CONSOLE_COLORS
 from configs.settings import API_CONFIGS, BASE_DIR
-from stt_WHISPER.funcs_whisper import get_str_from_wav_whisper
+from stt_WHISPER.funcs_whisper import async_get_str_from_wav_whisper, get_str_from_wav_whisper
 from stt_WHISPER.init_whisper import whisper_model_instance
 from utils_async_common.async_remove_file_by_path import async_remove_file
 from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav
@@ -58,7 +58,7 @@ async def vosk_transcribe_audio_to_text(
         new_audio_file.write(upload_file_content)
 
     # Create new .wav file if .mp3 (audio/mp3, audio/mpeg)
-    if (file.content_type in ["audio/mpeg", "audio/mp3",]
+    if (file.content_type in ["audio/mpeg", "audio/mp3", ]
             and file.filename.lower().endswith(".mp3")):
         prepared_sync_func = partial(
             convert_and_save_mp3_to_wav,
@@ -70,12 +70,19 @@ async def vosk_transcribe_audio_to_text(
         new_wav_full_path = new_audio_full_path
 
     datetime_start = datetime.now()
-    prepared_sync_func = partial(get_str_from_wav_whisper,
-                                 model_obj=whisper_model_instance,
-                                 full_file_path=new_wav_full_path,
-                                 log_wav_path=True,
-                                 log_wav_duration=True)
-    phrase = await asyncio.to_thread(prepared_sync_func)  # Executing prepared func
+    # prepared_sync_func = partial(get_str_from_wav_whisper,
+    #                              model_obj=whisper_model_instance,
+    #                              full_file_path=new_wav_full_path,
+    #                              log_wav_path=True,
+    #                              log_wav_duration=True)
+    # phrase = await asyncio.to_thread(prepared_sync_func)  # Executing prepared func
+
+    # IMPORTANT: Working variant
+    phrase = await async_get_str_from_wav_whisper(
+        model_obj=whisper_model_instance,
+        full_file_path=new_wav_full_path,
+        log_wav_path=True,
+        log_wav_duration=True)
     recognition_time = (datetime.now() - datetime_start).total_seconds()
     recognition_time = round(recognition_time, 1)
 
@@ -95,5 +102,5 @@ async def vosk_transcribe_audio_to_text(
                  "phrase": phrase,
                  # TODO: "username": username,
                  },
-        status_code=status.HTTP_201_CREATED,
+        status_code=status.HTTP_200_OK,
     )

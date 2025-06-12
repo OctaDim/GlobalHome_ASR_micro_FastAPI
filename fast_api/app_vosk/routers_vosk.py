@@ -95,5 +95,5 @@ async def vosk_transcribe_audio_to_text(
                  "phrase": phrase,
                  # TODO: "username": username,
                  },
-        status_code=status.HTTP_201_CREATED,
+        status_code=status.HTTP_200_OK,
     )
