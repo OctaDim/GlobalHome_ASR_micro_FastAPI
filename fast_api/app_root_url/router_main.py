@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from fastapi.responses import RedirectResponse
 
 
-router_root_url = APIRouter(prefix="", tags=["ROOT URL"])
+router_root_url = APIRouter(prefix="", tags=["ROOT"])
 
 
 @router_root_url.get(path="/")
