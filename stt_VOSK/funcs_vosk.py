@@ -15,7 +15,7 @@ def get_str_from_wav_vosk(model_obj: Model,
                           log_wav_duration: bool = False,
                           ) -> str | None:
     if not model_obj:
-        print(f"WHISPER model init not switched on in settings.py [ERROR]: "
+        print(f"VOSK model init not switched on in settings.py [ERROR]: "
               f"model: {model_obj}\n"
               f"full_file_path: {full_file_path}")
         return
