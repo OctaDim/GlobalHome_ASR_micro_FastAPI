@@ -32,8 +32,12 @@ def convert_and_save_mp3_to_wav(mp3_full_path: str,
               f"sample_width: {mp3_sample_width} \t"
               f"bitrate: {mp3_bitrate}")
 
-        mp3_audio = mp3_audio.set_frame_rate(wav_frame_rate)
-        mp3_audio = mp3_audio.set_channels(wav_channels)
+        if mp3_frame_rate != wav_frame_rate:
+            mp3_audio = mp3_audio.set_frame_rate(wav_frame_rate)
+
+        if mp3_channels != wav_channels:
+            mp3_audio = mp3_audio.set_channels(wav_channels)
+
         mp3_audio.export(new_wav_full_path, format="wav")
 
         wav_audio = AudioSegment.from_wav(new_wav_full_path)
