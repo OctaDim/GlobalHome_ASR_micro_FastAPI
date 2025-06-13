@@ -30,8 +30,8 @@ def get_str_from_wav_whisper(model_obj: Whisper,
         if log_wav_duration:
             print(f"Total wav audio duration: {wav_duration} seconds")
 
-        audio_float = whisper.load_audio(full_file_path)
-        result_dict = model_obj.transcribe(audio_float)
+        audio_numpy_arr_float32 = whisper.load_audio(full_file_path)
+        result_dict = model_obj.transcribe(audio_numpy_arr_float32)
 
         result_text = result_dict.get("text", "")
         return result_text
@@ -61,8 +61,8 @@ async def async_get_str_from_wav_whisper(model_obj: Whisper,
         if log_wav_duration:
             print(f"Total wav audio duration: {wav_duration} seconds")
 
-        audio_float = whisper.load_audio(full_file_path)
-        result_dict = model_obj.transcribe(audio_float)
+        audio_numpy_arr_float32 = whisper.load_audio(full_file_path)
+        result_dict = model_obj.transcribe(audio_numpy_arr_float32)
 
         result_text = result_dict.get("text", "")
         return result_text
