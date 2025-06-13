@@ -1,6 +1,9 @@
 import os
+from datetime import datetime
 
 from pydub import AudioSegment
+
+from utils_common.normalized_path import get_full_file_normal_path
 
 
 def convert_and_save_mp3_to_wav(mp3_full_path: str,
@@ -10,8 +13,12 @@ def convert_and_save_mp3_to_wav(mp3_full_path: str,
     cur_mp3_name_with_ext = os.path.basename(mp3_full_path)
     cur_mp3_name_no_ext = os.path.splitext(cur_mp3_name_with_ext)[0]
 
-    new_wav_name = f"{cur_mp3_name_no_ext}.wav"
-    new_wav_full_path = os.path.join(cur_dir_name, new_wav_name)
+    temp_id_str = datetime.now().strftime("%M%S%f")
+    new_wav_name_no_ext = f"{cur_mp3_name_no_ext}_temp_{temp_id_str}"
+    new_wav_name = f"{new_wav_name_no_ext}.wav"
+    new_wav_full_path = get_full_file_normal_path(
+        all_dir_str_parts=[cur_dir_name, ],
+        file_name_with_ext=new_wav_name)
 
     try:
         mp3_audio = AudioSegment.from_mp3(mp3_full_path)
