@@ -62,7 +62,11 @@ async def async_get_str_from_wav_whisper(model_obj: Whisper,
             print(f"Total wav audio duration: {wav_duration} seconds")
 
         audio_numpy_arr_float32 = whisper.load_audio(full_file_path)
-        result_dict = model_obj.transcribe(audio_numpy_arr_float32)
+        result_dict = model_obj.transcribe(
+            # audio=full_file_path,  # as full audio file path
+            audio_numpy_arr_float32,  # as numpy float 32 array
+            verbose=True,
+        )
 
         result_text = result_dict.get("text", "")
         return result_text
