@@ -29,8 +29,8 @@ async def req_api_stt_audio(session: aiohttp.ClientSession,
             base_url = API_CONFIGS.WHISPER_API_URL_BASE_NAME
             API_URL = f"http://{API_ENV_HOST}:{API_ENV_PORT}/{base_url}/transcribe/"
             async with aiohttp.request(method="POST", url=API_URL, data=form_data) as response:
-            # async with session.post(API_URL, data=form_data) as response:
-                if response.status not in ["200", "201", "202"]:
+                # async with session.post(API_URL, data=form_data) as response:
+                if response.status in ["200", "201", "202"]:
                     result = await response.json()
                     print(f"API response [OK]: "
                           f"response.status: {response.status}")
@@ -50,14 +50,33 @@ async def req_api_stt_audio(session: aiohttp.ClientSession,
 
 async def main_test_process(all_audio_files_paths):
     async with aiohttp.ClientSession() as session:
-        coro_tasks = []
+        # Works consistently with many files in dir
         for cur_audio_path in all_audio_files_paths:
-            coro_tasks.append(req_api_stt_audio(session, cur_audio_path))
-
-        green_color, reset_color = CONSOLE_COLORS.BRIGHT_GREEN, CONSOLE_COLORS.RESET
-        for cur_async_coro_task in asyncio.as_completed(coro_tasks):
-            result = await cur_async_coro_task
+            result = await req_api_stt_audio(
+                session=session, audio_file_full_path=cur_audio_path)
+            green_color, reset_color = CONSOLE_COLORS.BRIGHT_GREEN, CONSOLE_COLORS.RESET
             print(f"{green_color}{result}{reset_color}\n")
+
+        # # Works with the only file in dir, else server error 500
+        # coro_tasks = []
+        # for cur_audio_path in all_audio_files_paths:
+        #     cur_task = req_api_stt_audio(
+        #         session=session, audio_file_full_path=cur_audio_path)
+        #     coro_tasks.append(asyncio.create_task(cur_task))
+        # result = await asyncio.gather(*coro_tasks)
+        # green_color, reset_color = CONSOLE_COLORS.BRIGHT_GREEN, CONSOLE_COLORS.RESET
+        # print(f"{green_color}{result}{reset_color}\n")
+
+        # # Works with the only file in dir, else server error 500
+        # coro_tasks = []
+        # for cur_audio_path in all_audio_files_paths:
+        #     cur_task = req_api_stt_audio(
+        #         session=session, audio_file_full_path=cur_audio_path)
+        #     coro_tasks.append(cur_task)
+        # green_color, reset_color = CONSOLE_COLORS.BRIGHT_GREEN, CONSOLE_COLORS.RESET
+        # for cur_async_coro_task in asyncio.as_completed(coro_tasks):
+        #     result = await cur_async_coro_task
+        #     print(f"{green_color}{result}{reset_color}\n")
 
 
 if __name__ == '__main__':

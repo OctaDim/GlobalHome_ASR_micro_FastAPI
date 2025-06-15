@@ -30,7 +30,7 @@ async def req_api_stt_audio(session: aiohttp.ClientSession,
             API_URL = f"http://{API_ENV_HOST}:{API_ENV_PORT}/{base_url}/transcribe/"
             async with aiohttp.request(method="POST", url=API_URL, data=form_data) as response:
             # async with session.post(API_URL, data=form_data) as response:
-                if response.status not in ["200", "201", "202"]:
+                if response.status in ["200", "201", "202"]:
                     result = await response.json()
                     print(f"API response [OK]: "
                           f"response.status: {response.status}")
