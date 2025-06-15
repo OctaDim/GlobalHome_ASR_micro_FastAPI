@@ -17,6 +17,12 @@ env = load_dotenv(normal_env_path)  # just to stay import
 # API_ENV_USERNAME = os.getenv("API_USERNAME")
 # API_ENV_PASSWORD = os.getenv("API_PASSWORD")
 
+@dataclass
+class API_CONFIG_NAMES:
+    API_PRODUCT_SERVER_IP = "API_prod_server_ip_8000"
+    API_TEST_ANY_PORT_IP = "API_test_0_0_0_0_8000"
+    API_TEST_LOCALHOST = "API_test_127_0_0_1_8000"
+
 
 @dataclass
 class VOSK_MODEL_PATHS:
@@ -66,7 +72,7 @@ class API_CONFIGS:
     WHISPER_ALLOWED_AUDIO_EXTENSIONS: tuple = (".wav", ".mp3",)
     WHISPER_API_URL_BASE_NAME = "whisper"
 
-    API_ENV_CONFIGS_NAME = "API_test_all_ip_0_0_0_0"
+    API_ENV_CONFIGS_NAME = API_CONFIG_NAMES.API_TEST_LOCALHOST
     SCRIPT_IN_AUDIO_FILES_PATH: str = "data_incoming/mp3_samples_KIROV"
     API_IN_AUDIO_FILES_PATH: str = "data_incoming/temporary_files_API"
 
