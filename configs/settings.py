@@ -5,6 +5,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from utils_common.get_cur_ip_address import get_cur_local_ip
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -12,6 +14,8 @@ full_path = os.path.join(BASE_DIR, ".env")
 normal_env_path = os.path.normpath(full_path)
 
 env = load_dotenv(normal_env_path)  # just to stay import
+
+
 # API_ENV_HOST: str = os.getenv("API_HOST")
 # API_ENV_PORT: int = int(os.getenv("API_PORT"))
 # API_ENV_USERNAME = os.getenv("API_USERNAME")
@@ -19,9 +23,9 @@ env = load_dotenv(normal_env_path)  # just to stay import
 
 @dataclass
 class API_CONFIG_NAMES:
-    API_PRODUCT_SERVER_IP = "API_prod_server_ip_8000"
-    API_TEST_ANY_PORT_IP = "API_test_0_0_0_0_8000"
-    API_TEST_LOCALHOST = "API_test_127_0_0_1_8000"
+    API_PRODUCT_SERVER_IP = "API_prod_176_124_136_4_8000"
+    API_TEST_PORT_ANY_IP = "API_all_test_0_0_0_0_8000"
+    API_TEST_LOCALHOST = "API_localhost_192_168_0_117_8000"
 
 
 @dataclass
@@ -72,24 +76,28 @@ class API_CONFIGS:
     WHISPER_ALLOWED_AUDIO_EXTENSIONS: tuple = (".wav", ".mp3",)
     WHISPER_API_URL_BASE_NAME = "whisper"
 
-    API_ENV_CONFIGS_NAME = API_CONFIG_NAMES.API_TEST_LOCALHOST
     SCRIPT_IN_AUDIO_FILES_PATH: str = "data_incoming/mp3_samples_KIROV"
     API_IN_AUDIO_FILES_PATH: str = "data_incoming/temporary_files_API"
 
 
 full_path = os.path.join(BASE_DIR, ".configs.ini")
 normal_env_path = os.path.normpath(full_path)
-
 api_configs = ConfigParser()
 api_configs.read(filenames=normal_env_path)
-API_ENV_HOST: str = api_configs.get(
-    section=API_CONFIGS.API_ENV_CONFIGS_NAME, option="API_HOST")
 
-API_ENV_PORT: int = int(api_configs.get(
-    section=API_CONFIGS.API_ENV_CONFIGS_NAME, option="API_PORT"))
+cur_local_ip = get_cur_local_ip()
+if cur_local_ip == "176.124.136.4":
+    api_configs_name = API_CONFIG_NAMES.API_PRODUCT_SERVER_IP
+elif cur_local_ip == "192.168.0.117":
+    api_configs_name = API_CONFIG_NAMES.API_TEST_LOCALHOST
+else:
+    api_configs_name = API_CONFIG_NAMES.API_TEST_PORT_ANY_IP
 
-API_ENV_USERNAME: str = api_configs.get(
-    section=API_CONFIGS.API_ENV_CONFIGS_NAME, option="API_USERNAME")
-
-API_ENV_PASSWORD: str = api_configs.get(
-    section=API_CONFIGS.API_ENV_CONFIGS_NAME, option="API_PASSWORD")
+API_ENV_HOST: str = api_configs.get(section=api_configs_name,
+                                    option="API_HOST")
+API_ENV_PORT: int = int(api_configs.get(section=api_configs_name,
+                                        option="API_PORT"))
+API_ENV_USERNAME: str = api_configs.get(section=api_configs_name,
+                                        option="API_USERNAME")
+API_ENV_PASSWORD: str = api_configs.get(section=api_configs_name,
+                                        option="API_PASSWORD")

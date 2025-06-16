@@ -237,3 +237,4 @@ ___Temporary/
 
 stt_VOSK/models_vosk/*
 data_outgoing/*
+.configs.ini
