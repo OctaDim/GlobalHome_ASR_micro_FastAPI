@@ -14,7 +14,7 @@ routers_list = [
 ]
 
 
-def create_fastapi_application():
+def create_fastapi_application() -> FastAPI:
     fastapi_app = FastAPI()
     for cur_router in routers_list:
         fastapi_app.include_router(router=cur_router, )
