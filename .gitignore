@@ -236,5 +236,6 @@ ___Temp/
 ___Temporary/
 
 stt_VOSK/models_vosk/*
+stt_WHISPER/models_whisper/*
 data_outgoing/*
 .configs.ini
