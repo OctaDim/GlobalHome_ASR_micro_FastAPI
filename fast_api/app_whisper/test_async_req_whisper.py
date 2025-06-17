@@ -4,7 +4,7 @@ from pathlib import Path
 import aiohttp
 
 from configs.console_colors import CONSOLE_COLORS
-from configs.settings import API_CONFIGS, API_ENV_HOST, API_ENV_PORT, BASE_DIR
+from configs.settings import API_CONFIGS, API_HOST, API_PORT, BASE_DIR
 from utils_common.dir_files_names_paths import get_dir_files_full_paths
 from utils_common.normalized_path import get_full_dir_normal_path
 
@@ -27,7 +27,7 @@ async def req_api_stt_audio(session: aiohttp.ClientSession,
 
         try:
             base_url = API_CONFIGS.WHISPER_API_URL_BASE_NAME
-            API_URL = f"http://{API_ENV_HOST}:{API_ENV_PORT}/{base_url}/transcribe/"
+            API_URL = f"http://{API_HOST}:{API_PORT}/{base_url}/transcribe/"
             async with aiohttp.request(method="POST", url=API_URL, data=form_data) as response:
                 # async with session.post(API_URL, data=form_data) as response:
                 if response.status in ["200", "201", "202"]:

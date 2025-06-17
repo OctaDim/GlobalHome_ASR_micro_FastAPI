@@ -1,5 +1,6 @@
 from vosk import Model
 
+from configs.console_colors import CONSOLE_COLORS
 from configs.settings import API_CONFIGS, BASE_DIR
 from utils_common.exec_time_decorator import execution_time_decorator
 from utils_common.normalized_path import get_full_dir_normal_path
@@ -44,9 +45,13 @@ vosk_model_instance = None
                           exec_time_logging=True,
                           new_line_after=True,
                           note="VOSK Model initialization time")
-def init_vosk_model(model_path: str,
-                    use_singleton=True,
-                    use_hard_singleton=True) -> Model:
+def initialise_vosk_model(model_path: str,
+                          use_singleton=True,
+                          use_hard_singleton=True) -> Model:
+    green_color = CONSOLE_COLORS.BRIGHT_GREEN
+    reset_color = CONSOLE_COLORS.RESET
+    print(f"Model: {green_color}{model_path}{reset_color}")
+
     if use_singleton:
         if use_hard_singleton:
             model = HardSingletonVOSK(model_path=model_path)
@@ -61,7 +66,7 @@ if API_CONFIGS.INIT_VOSK_MODEL:
     vosk_model_path = get_full_dir_normal_path(
         [BASE_DIR, API_CONFIGS.VOSK_MODEL_PATH])
 
-    vosk_model_instance = init_vosk_model(
+    vosk_model_instance = initialise_vosk_model(
         model_path=vosk_model_path,
         use_singleton=True,
         use_hard_singleton=True)

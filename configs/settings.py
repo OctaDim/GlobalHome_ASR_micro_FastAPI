@@ -17,10 +17,10 @@ normal_env_path = os.path.normpath(full_path)
 env = load_dotenv(normal_env_path)  # just to stay import
 
 
-# API_ENV_HOST: str = os.getenv("API_HOST")
-# API_ENV_PORT: int = int(os.getenv("API_PORT"))
-# API_ENV_USERNAME = os.getenv("API_USERNAME")
-# API_ENV_PASSWORD = os.getenv("API_PASSWORD")
+# API_HOST: str = os.getenv("API_HOST")
+# API_PORT: int = int(os.getenv("API_PORT"))
+# API_USERNAME = os.getenv("API_USERNAME")
+# API_PASSWORD = os.getenv("API_PASSWORD")
 
 @dataclass
 class API_CONFIG_NAMES:
@@ -29,8 +29,6 @@ class API_CONFIG_NAMES:
     API_TEST_WIN_LOCALHOST = "API_win_localhost_127_0_0_1_8000"
     API_TEST_UNIX_LOCALHOST = "API_unix_localhost_127_0_1_1_8000"
     API_TEST_DEXP_IP = "API_dexp_ip_192_168_0_117_8000"
-
-
 
 
 @dataclass
@@ -75,6 +73,7 @@ class API_CONFIGS:
     INIT_WHISPER_MODEL: bool = True
     # INIT_WHISPER_MODEL: bool = False
     WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.LARGE
+    WHISPER_MODELS_DOWNLOAD_PATH: str = "stt_WHISPER/models_whisper"
     WHISPER_AUDIO_FRAME_RATE: int = 16000
     WHISPER_AUDIO_CHANNELS_NUM: int = 1
     WHISPER_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
@@ -91,24 +90,20 @@ api_configs = ConfigParser()
 api_configs.read(filenames=normal_env_path)
 
 get_cur_internal_ip(log_ip=True)
-cur_local_ip = get_cur_external_ip_via_google_dns(log_ip=True)
+cur_external_ip = get_cur_external_ip_via_google_dns(log_ip=True)
 
-if cur_local_ip == "176.124.136.4":
-    api_configs_name = API_CONFIG_NAMES.API_PRODUCT_SERVER_IP
-elif cur_local_ip == "192.168.0.117":
-    api_configs_name = API_CONFIG_NAMES.API_TEST_DEXP_IP
+if cur_external_ip == "176.124.136.4":
+    api_conf_name = API_CONFIG_NAMES.API_PRODUCT_SERVER_IP
+elif cur_external_ip == "192.168.0.117":
+    api_conf_name = API_CONFIG_NAMES.API_TEST_DEXP_IP
 elif sys.platform == "linux":
-    api_configs_name = API_CONFIG_NAMES.API_TEST_UNIX_LOCALHOST
+    api_conf_name = API_CONFIG_NAMES.API_TEST_UNIX_LOCALHOST
 elif sys.platform == "win32":
-    api_configs_name = API_CONFIG_NAMES.API_TEST_WIN_LOCALHOST
+    api_conf_name = API_CONFIG_NAMES.API_TEST_WIN_LOCALHOST
 else:
-    api_configs_name = API_CONFIG_NAMES.API_TEST_PORT_ANY_IP
+    api_conf_name = API_CONFIG_NAMES.API_TEST_PORT_ANY_IP
 
-API_ENV_HOST: str = api_configs.get(section=api_configs_name,
-                                    option="API_HOST")
-API_ENV_PORT: int = int(api_configs.get(section=api_configs_name,
-                                        option="API_PORT"))
-API_ENV_USERNAME: str = api_configs.get(section=api_configs_name,
-                                        option="API_USERNAME")
-API_ENV_PASSWORD: str = api_configs.get(section=api_configs_name,
-                                        option="API_PASSWORD")
+API_HOST: str = api_configs.get(section=api_conf_name, option="API_HOST")
+API_PORT: int = int(api_configs.get(section=api_conf_name, option="API_PORT"))
+API_USERNAME: str = api_configs.get(section=api_conf_name, option="API_USERNAME")
+API_PASSWORD: str = api_configs.get(section=api_conf_name, option="API_PASSWORD")
