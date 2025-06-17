@@ -5,7 +5,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from utils_common.get_cur_ip_address import get_cur_local_ip
+from utils_common.get_cur_ip_address import get_cur_external_ip_via_google_dns, get_cur_internal_ip
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -85,7 +85,9 @@ normal_env_path = os.path.normpath(full_path)
 api_configs = ConfigParser()
 api_configs.read(filenames=normal_env_path)
 
-cur_local_ip = get_cur_local_ip()
+get_cur_internal_ip(log_ip=True)
+cur_local_ip = get_cur_external_ip_via_google_dns(log_ip=True)
+
 if cur_local_ip == "176.124.136.4":
     api_configs_name = API_CONFIG_NAMES.API_PRODUCT_SERVER_IP
 elif cur_local_ip == "192.168.0.117":

@@ -10,12 +10,17 @@ audio_file_full_paths = [
     r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ask_want_appointment_0.wav",
 ]
 
-API_URLS = [f"http://192.168.0.117:8000/vosk/transcribe/",
-            f"http://192.168.0.117:8000/whisper/transcribe/"]
+API_URLS = [
+    f"http://176.124.136.4:8000/vosk/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
+    f"http://176.124.136.4:8000/whisper/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
+    # f"http://192.168.0.117:8000/vosk/transcribe/",  # Local Dexp API VOSK-WHISPER
+    # f"http://192.168.0.117:8000/whisper/transcribe/",  # Local Dexp API VOSK-WHISPER
+]
+
 
 async def main():
     for cur_api_url in API_URLS:
-        print("#"*100)
+        print("#" * 100)
         for cur_file in audio_file_full_paths:
             with open(cur_file, "rb") as audio_file:
                 try:
@@ -42,6 +47,7 @@ async def main():
                                 print(f"Request .text() [ERROR]: {error}")
                 except Exception as error:
                     print(f"API request [ERROR]: {error}")
+
 
 if __name__ == "__main__":
     asyncio.run(main())
