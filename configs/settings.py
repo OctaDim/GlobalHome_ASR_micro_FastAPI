@@ -23,9 +23,13 @@ env = load_dotenv(normal_env_path)  # just to stay import
 
 @dataclass
 class API_CONFIG_NAMES:
-    API_PRODUCT_SERVER_IP = "API_prod_176_124_136_4_8000"
-    API_TEST_PORT_ANY_IP = "API_all_test_0_0_0_0_8000"
-    API_TEST_LOCALHOST = "API_localhost_192_168_0_117_8000"
+    API_PRODUCT_SERVER_IP = "API_prod_server_176_124_136_4_8000"
+    API_TEST_PORT_ANY_IP = "API_port_all_ips_0_0_0_0_8000"
+    API_TEST_WIN_LOCALHOST = "API_win_localhost_127_0_0_1_8000"
+    API_TEST_UNIX_LOCALHOST = "API_unix_localhost_127_0_1_1_8000"
+    API_TEST_DEXP_IP = "API_dexp_ip_192_168_0_117_8000"
+
+
 
 
 @dataclass
@@ -56,7 +60,7 @@ class WHISPER_MODEL_NAMES:
 class API_CONFIGS:
     INIT_VOSK_MODEL: bool = True
     # INIT_VOSK_MODEL: bool = False
-    VOSK_MODEL_PATH: str = VOSK_MODEL_PATHS.SMALL_87MB_RU_022
+    VOSK_MODEL_PATH: str = VOSK_MODEL_PATHS.BIG_3_5GB_RU_010
     VOSK_AUDIO_FRAME_RATE: int = 16000
     VOSK_AUDIO_CHANNELS_NUM: int = 1
     VOSK_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
@@ -69,7 +73,7 @@ class API_CONFIGS:
 
     INIT_WHISPER_MODEL: bool = True
     # INIT_WHISPER_MODEL: bool = False
-    WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.SMALL
+    WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.LARGE
     WHISPER_AUDIO_FRAME_RATE: int = 16000
     WHISPER_AUDIO_CHANNELS_NUM: int = 1
     WHISPER_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
@@ -91,7 +95,7 @@ cur_local_ip = get_cur_external_ip_via_google_dns(log_ip=True)
 if cur_local_ip == "176.124.136.4":
     api_configs_name = API_CONFIG_NAMES.API_PRODUCT_SERVER_IP
 elif cur_local_ip == "192.168.0.117":
-    api_configs_name = API_CONFIG_NAMES.API_TEST_LOCALHOST
+    api_configs_name = API_CONFIG_NAMES.API_TEST_DEXP_IP
 else:
     api_configs_name = API_CONFIG_NAMES.API_TEST_PORT_ANY_IP
 
