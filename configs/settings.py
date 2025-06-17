@@ -1,4 +1,5 @@
 ﻿import os
+import sys
 from configparser import ConfigParser
 from dataclasses import dataclass
 from pathlib import Path
@@ -96,6 +97,10 @@ if cur_local_ip == "176.124.136.4":
     api_configs_name = API_CONFIG_NAMES.API_PRODUCT_SERVER_IP
 elif cur_local_ip == "192.168.0.117":
     api_configs_name = API_CONFIG_NAMES.API_TEST_DEXP_IP
+elif sys.platform == "linux":
+    api_configs_name = API_CONFIG_NAMES.API_TEST_UNIX_LOCALHOST
+elif sys.platform == "win32":
+    api_configs_name = API_CONFIG_NAMES.API_TEST_WIN_LOCALHOST
 else:
     api_configs_name = API_CONFIG_NAMES.API_TEST_PORT_ANY_IP
 
