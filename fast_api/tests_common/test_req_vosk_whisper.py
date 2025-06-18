@@ -5,9 +5,18 @@ import aiohttp
 
 
 audio_file_full_paths = [
-    r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ask_want_appointment_0.wav",
-    r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ask_want_appointment_0.wav",
-    r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ask_want_appointment_0.wav",
+    r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ffa2bea1_80f1_4bd1_a78a_78975fc0716c_2024_12_26_12_17_49_3_89235953249.mp3",
+    r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ffa2bea1_80f1_4bd1_a78a_78975fc0716c_2024_12_26_12_17_49_3_89235953249.mp3",
+    # r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ffa2bea1_80f1_4bd1_a78a_78975fc0716c_2024_12_26_12_17_49_3_89235953249.mp3",
+
+
+    # r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ask_want_appointment_0.wav",
+    # r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ask_want_appointment_0.wav",
+    # r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\3b136563-a94a-4953-9456-9547783ecb78_2025-05-19-15-43-40_79968971905_1000004.mp3",
+    # r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\15209673-6e15-40b0-be75-c24d4bbb9bfc_2025-05-19-15-43-36_79091447010_1000004.mp3",
+    # r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\KIROV_1_f61cbd53_89bd_4d5f_92e5_595ec3a5c882_2025_06_13_13_18_06_79165937387.mp3",
+    # r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\KIROV_2_0ad4aa59_d022_476e_8b58_549beccb96be_2025_06_13_12_37_03_79823813009.mp3",
+
 ]
 
 API_URLS = [
