@@ -19,10 +19,10 @@ audio_file_full_paths = [
 ]
 
 API_URLS = [
-    f"http://176.124.136.4:8000/vosk/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
-    f"http://176.124.136.4:8000/whisper/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
-    # f"http://192.168.0.117:8000/vosk/transcribe/",  # Local Dexp API VOSK-WHISPER
-    # f"http://192.168.0.117:8000/whisper/transcribe/",  # Local Dexp API VOSK-WHISPER
+    # f"http://176.124.136.4:8000/vosk/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
+    # f"http://176.124.136.4:8000/whisper/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
+    f"http://192.168.0.117:8000/vosk/transcribe/",  # Local Dexp API VOSK-WHISPER
+    f"http://192.168.0.117:8000/whisper/transcribe/",  # Local Dexp API VOSK-WHISPER
 ]
 
 
@@ -43,7 +43,9 @@ async def main():
                     print(f"Creating form_data [ERROR]: {error}")
 
                 try:
-                    async with aiohttp.request(method="POST", url=cur_api_url, data=form_data) as response:
+                    async with aiohttp.request(method="POST",
+                                               url=cur_api_url,
+                                               data=form_data) as response:
                         print(f"Request status: {response.status}")
                         try:
                             json_response = await response.json()

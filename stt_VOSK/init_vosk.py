@@ -1,7 +1,7 @@
 from vosk import Model
 
 from configs.console_colors import CONSOLE_COLORS
-from configs.settings import API_CONFIGS, BASE_DIR
+from configs.settings import BASE_DIR, VOSK_OPTIONS
 from utils_common.exec_time_decorator import execution_time_decorator
 from utils_common.normalized_path import get_full_dir_normal_path
 
@@ -62,9 +62,9 @@ def initialise_vosk_model(model_path: str,
     return model
 
 
-if API_CONFIGS.VOSK_MODEL_INIT:
+if VOSK_OPTIONS.VOSK_MODEL_INIT:
     vosk_model_path = get_full_dir_normal_path(
-        [BASE_DIR, API_CONFIGS.VOSK_MODEL_PATH])
+        [BASE_DIR, VOSK_OPTIONS.VOSK_MODEL_PATH])
 
     vosk_model_instance = initialise_vosk_model(
         model_path=vosk_model_path,

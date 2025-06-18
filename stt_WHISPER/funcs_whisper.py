@@ -1,4 +1,5 @@
 import wave
+from typing import Literal, Union
 
 import whisper
 from fastapi import HTTPException, status
@@ -10,12 +11,14 @@ from utils_common.exec_time_decorator import execution_time_decorator
 @execution_time_decorator(in_seconds=True,
                           exec_time_logging=True,
                           note="WHISPER recognition time")
-def get_str_from_wav_whisper(model_obj: Whisper,
-                             full_file_path: str,
-                             log_wav_path: bool = False,
-                             log_wav_duration: bool = False,
-                             transcribe_verbose: bool = False,
-                             ) -> str | None:
+def get_str_from_wav_whisper(
+        model_obj: Whisper,
+        full_file_path: str,
+        language: Union[Literal["en", "ru"], str, None] = None,
+        log_wav_path: bool = False,
+        log_wav_duration: bool = False,
+        transcribe_verbose: bool = False,
+) -> str | HTTPException:
     if not model_obj:
         log_text = (f"WHISPER model init not switched on in settings.py [ERROR]: "
                     f"model: {model_obj}\n"
@@ -34,24 +37,24 @@ def get_str_from_wav_whisper(model_obj: Whisper,
 
             if log_wav_path:
                 print(f"Current wav file: {full_file_path}")
+
+            if wav_duration <= 0:
+                log_text = (f"Zero wav audio duration [ERROR]: "
+                            f"{wav_duration} seconds, "
+                            f"full_file_path: {full_file_path}")
+                print(log_text)
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail=log_text)
+
             if log_wav_duration:
-                if wav_duration:
-                    print(f"Total wav audio duration: {wav_duration} secs")
-                else:
-                    log_text = (f"Zero wav audio duration [ERROR]: "
-                                f"{wav_duration} secs, "
-                                f"full_file_path: {full_file_path}")
-                    print(log_text)
-                    raise HTTPException(
-                        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                        detail={"error": log_text},
-                        headers=None)
+                print(f"Total wav audio duration: {wav_duration} seconds")
 
             audio_numpy_arr_float32 = whisper.load_audio(full_file_path)
             result_dict = model_obj.transcribe(
                 # audio=full_file_path,  # as full audio file path
                 audio=audio_numpy_arr_float32,  # as numpy float 32 array
-                language="ru",
+                language=language,
                 verbose=transcribe_verbose,
             )
 
@@ -69,13 +72,14 @@ def get_str_from_wav_whisper(model_obj: Whisper,
 @execution_time_decorator(in_seconds=True,
                           exec_time_logging=True,
                           note="WHISPER recognition time")
-async def async_get_str_from_wav_whisper(model_obj: Whisper,
-                                         full_file_path: str,
-                                         log_wav_path: bool = False,
-                                         log_wav_duration: bool = False,
-                                         transcribe_verbose: bool = False,
-                                         language: str = "ru",
-                                         ) -> str | tuple[str, str]:
+async def async_get_str_from_wav_whisper(
+        model_obj: Whisper,
+        full_file_path: str,
+        language: Union[Literal["en", "ru"], str, None] = None,
+        log_wav_path: bool = False,
+        log_wav_duration: bool = False,
+        transcribe_verbose: bool = False,
+) -> str | HTTPException:
     if not model_obj:
         log_text = (f"WHISPER model init not switched on in settings.py [ERROR]: "
                     f"model: {model_obj}\n"
@@ -96,7 +100,7 @@ async def async_get_str_from_wav_whisper(model_obj: Whisper,
 
             if wav_duration <= 0:
                 log_text = (f"Zero wav audio duration [ERROR]: "
-                            f"{wav_duration} secs, "
+                            f"{wav_duration} seconds, "
                             f"full_file_path: {full_file_path}")
                 print(log_text)
                 raise HTTPException(
@@ -104,7 +108,7 @@ async def async_get_str_from_wav_whisper(model_obj: Whisper,
                     detail=log_text)
 
             if log_wav_duration:
-                print(f"Total wav audio duration: {wav_duration} secs")
+                print(f"Total wav audio duration: {wav_duration} seconds")
 
             audio_numpy_arr_float32 = whisper.load_audio(full_file_path)
             result_dict = model_obj.transcribe(

@@ -36,7 +36,7 @@ def get_str_from_wav_vosk(model_obj: Model,
 
             if wav_duration <= 0:
                 log_text = (f"Zero wav audio duration [ERROR]: "
-                            f"{wav_duration} secs, "
+                            f"{wav_duration} seconds, "
                             f"full_file_path: {full_file_path}")
                 print(log_text)
                 raise HTTPException(
@@ -44,7 +44,7 @@ def get_str_from_wav_vosk(model_obj: Model,
                     detail=log_text)
 
             if log_wav_duration:
-                print(f"Total wav audio duration: {wav_duration} secs")
+                print(f"Total wav audio duration: {wav_duration} seconds")
 
             while True:
                 # wave_byte_data = wave_file_obj.readframes(sample_rate*1)  # In seconds

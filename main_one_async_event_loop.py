@@ -3,7 +3,7 @@ import asyncio
 from fastapi import FastAPI
 from uvicorn import Config, Server
 
-from configs.settings import API_CONFIGS
+from configs.settings import API_HOST, API_PORT
 from fast_api.app_vosk.routers_vosk import router_vosk
 
 
@@ -34,8 +34,8 @@ async def run_task_3():
 async def run_main():
     uvicorn_fastapi_config = Config(app=create_fastapi_app(),
                                     # app="main:create_fastapi_app",  # literal func call is necessary if server reload=True when code changing
-                                    host=API_CONFIGS.BASE_HOST,
-                                    port=API_CONFIGS.BASE_PORT,
+                                    host=API_HOST,
+                                    port=API_PORT,
                                     # reload=True,
                                     # factory=True,
                                     use_colors=True)

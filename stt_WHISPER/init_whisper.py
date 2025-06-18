@@ -5,7 +5,7 @@ import whisper
 from whisper import Whisper
 
 from configs.console_colors import CONSOLE_COLORS
-from configs.settings import API_CONFIGS, BASE_DIR
+from configs.settings import BASE_DIR, WHISPER_OPTIONS
 from utils_common.exec_time_decorator import execution_time_decorator
 from utils_common.normalized_path import get_full_dir_normal_path
 
@@ -33,12 +33,12 @@ def initialise_whisper_model(model_name: str,
 
 whisper_model_instance = None
 
-if API_CONFIGS.WHISPER_MODEL_INIT:
+if WHISPER_OPTIONS.WHISPER_MODEL_INIT:
     whisper_model_path = get_full_dir_normal_path(
-        [BASE_DIR, API_CONFIGS.WHISPER_MODELS_DOWNLOAD_PATH])
+        [BASE_DIR, WHISPER_OPTIONS.WHISPER_MODELS_DOWNLOAD_PATH])
 
     os.makedirs(name=whisper_model_path, exist_ok=True)
 
     whisper_model_instance = initialise_whisper_model(
-        model_name=API_CONFIGS.WHISPER_MODEL_NAME,
+        model_name=WHISPER_OPTIONS.WHISPER_MODEL_NAME,
         model_download_path=whisper_model_path)

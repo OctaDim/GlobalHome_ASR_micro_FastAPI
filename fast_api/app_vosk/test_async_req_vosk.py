@@ -4,7 +4,7 @@ from pathlib import Path
 import aiohttp
 
 from configs.console_colors import CONSOLE_COLORS
-from configs.settings import API_CONFIGS, API_HOST, API_PORT, BASE_DIR
+from configs.settings import API_HOST, API_PORT, BASE_DIR, VOSK_OPTIONS
 from utils_common.dir_files_names_paths import get_dir_files_full_paths
 from utils_common.normalized_path import get_full_dir_normal_path
 
@@ -26,10 +26,10 @@ async def req_api_stt_audio(session: aiohttp.ClientSession,
             return error_info
 
         try:
-            base_url = API_CONFIGS.VOSK_API_URL_BASE_NAME
+            base_url = VOSK_OPTIONS.VOSK_API_URL_BASE_NAME
             API_URL = f"http://{API_HOST}:{API_PORT}/{base_url}/transcribe/"
             async with aiohttp.request(method="POST", url=API_URL, data=form_data) as response:
-            # async with session.post(API_URL, data=form_data) as response:
+                # async with session.post(API_URL, data=form_data) as response:
                 if response.status in ["200", "201", "202"]:
                     result = await response.json()
                     print(f"API response [OK]: "
@@ -54,7 +54,8 @@ async def main_test_process(all_audio_files_paths):
         for cur_audio_path in all_audio_files_paths:
             coro_tasks.append(req_api_stt_audio(session, cur_audio_path))
 
-        green_color, reset_color = CONSOLE_COLORS.BRIGHT_GREEN, CONSOLE_COLORS.RESET
+        green_color = CONSOLE_COLORS.BRIGHT_GREEN
+        reset_color = CONSOLE_COLORS.RESET
         for cur_async_coro_task in asyncio.as_completed(coro_tasks):
             result = await cur_async_coro_task
             print(f"{green_color}{result}{reset_color}\n")
@@ -62,18 +63,18 @@ async def main_test_process(all_audio_files_paths):
 
 if __name__ == '__main__':
     full_dir_path = get_full_dir_normal_path(
-        all_dir_str_parts=[BASE_DIR, API_CONFIGS.SCRIPT_IN_AUDIO_FILES_PATH])
+        all_dir_str_parts=[BASE_DIR, VOSK_OPTIONS.VOSK_SCRIPT_IN_AUDIO_PATH])
 
     all_files_paths = get_dir_files_full_paths(full_dir_path)
 
     all_audio_files_paths = []
     for cur_file_path in all_files_paths:
-        if cur_file_path.endswith(API_CONFIGS.VOSK_ALLOWED_AUDIO_EXTENSIONS):
+        if cur_file_path.endswith(VOSK_OPTIONS.VOSK_ALLOWED_AUDIO_EXTENSIONS):
             all_audio_files_paths.append(cur_file_path)
 
     if not all_audio_files_paths:
         print(f"No files in settings defined directory "
-              f"API_CONFIGS.SCRIPT_IN_AUDIO_FILES_PATH [ERROR]: "
-              f"{API_CONFIGS.SCRIPT_IN_AUDIO_FILES_PATH}\n")
+              f"VOSK_OPTIONS.SCRIPT_IN_AUDIO_FILES_PATH [ERROR]: "
+              f"{VOSK_OPTIONS.VOSK_SCRIPT_IN_AUDIO_PATH}\n")
     else:
         asyncio.run(main_test_process(all_audio_files_paths))

@@ -1,7 +1,7 @@
 import os
 
 from configs.console_colors import CONSOLE_COLORS
-from configs.settings import API_CONFIGS, BASE_DIR
+from configs.settings import BASE_DIR, VOSK_OPTIONS, VOSK_PUNCTUATOR_OPTIONS
 from stt_VOSK.funcs_vosk import get_str_from_wav_vosk
 from stt_VOSK.init_vosk_punctuator import vosk_punctuator_model_instance
 from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav
@@ -15,14 +15,14 @@ def execute_scripts_vosk():
     vosk_punctuator_inst = vosk_punctuator_model_instance
 
     full_dir_path = get_full_dir_normal_path(
-        all_dir_str_parts=[BASE_DIR, API_CONFIGS.SCRIPT_IN_AUDIO_FILES_PATH])
+        all_dir_str_parts=[BASE_DIR, VOSK_OPTIONS.VOSK_SCRIPT_IN_AUDIO_PATH])
 
     audio_file_names = get_dir_files_only_names(full_dir_path=full_dir_path)
 
     audio_files_paths = []
     for audio_file_name in audio_file_names:
         full_file_path = get_full_file_normal_path(
-            all_dir_str_parts=[BASE_DIR, API_CONFIGS.SCRIPT_IN_AUDIO_FILES_PATH],
+            all_dir_str_parts=[BASE_DIR, VOSK_OPTIONS.VOSK_SCRIPT_IN_AUDIO_PATH],
             file_name_with_ext=audio_file_name)
         audio_files_paths.append(full_file_path)
 
@@ -43,8 +43,8 @@ def execute_scripts_vosk():
         if cur_audio_path.endswith(".mp3"):
             new_wav_full_path = convert_and_save_mp3_to_wav(
                 mp3_full_path=cur_audio_path,
-                wav_frame_rate=API_CONFIGS.VOSK_AUDIO_FRAME_RATE,
-                wav_channels=API_CONFIGS.VOSK_AUDIO_CHANNELS_NUM)
+                wav_frame_rate=VOSK_OPTIONS.VOSK_AUDIO_FRAME_RATE,
+                wav_channels=VOSK_OPTIONS.VOSK_AUDIO_CHANNELS_NUM)
             cur_audio_path = new_wav_full_path
 
         if not cur_audio_path.endswith(".wav"):
@@ -58,7 +58,8 @@ def execute_scripts_vosk():
         if new_wav_full_path and os.path.exists(new_wav_full_path):
             os.remove(new_wav_full_path)
 
-        if API_CONFIGS.VOSK_PUNCTUATOR_MODEL_INIT and vosk_punctuator_inst:
+        if (VOSK_PUNCTUATOR_OPTIONS.VOSK_PUNCTUATOR_MODEL_INIT
+                and vosk_punctuator_inst):
             try:
                 new_phrase = vosk_punctuator_inst.recase(phrase)
                 print(f"Punctuation [OK]: "
@@ -67,7 +68,8 @@ def execute_scripts_vosk():
                 print(f"Punctuation [ERROR]: "
                       f"error: {error}, phrase: {phrase}\n")
 
-        green_color, reset_color = CONSOLE_COLORS.BRIGHT_GREEN, CONSOLE_COLORS.RESET
+        green_color = CONSOLE_COLORS.BRIGHT_GREEN
+        reset_color = CONSOLE_COLORS.RESET
         print(f"{counter}/{total_files} Recognized Phrase: "
               f"{green_color}{phrase}{reset_color}\n")
 

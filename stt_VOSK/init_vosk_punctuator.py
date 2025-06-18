@@ -1,6 +1,6 @@
 from vosk import Model
 
-from configs.settings import API_CONFIGS, BASE_DIR
+from configs.settings import BASE_DIR, VOSK_PUNCTUATOR_OPTIONS
 from utils_common.exec_time_decorator import execution_time_decorator
 from utils_common.normalized_path import get_full_dir_normal_path
 
@@ -57,9 +57,9 @@ def init_vosk_punctuator_model(model_path: str,
     return model
 
 
-if API_CONFIGS.VOSK_PUNCTUATOR_MODEL_INIT:
+if VOSK_PUNCTUATOR_OPTIONS.VOSK_PUNCTUATOR_MODEL_INIT:
     vosk_punctuator_model_path = get_full_dir_normal_path(
-        [BASE_DIR, API_CONFIGS.VOSK_PUNCTUATOR_MODEL_PATH])
+        [BASE_DIR, VOSK_PUNCTUATOR_OPTIONS.VOSK_PUNCTUATOR_MODEL_PATH])
 
     vosk_punctuator_model_instance = init_vosk_punctuator_model(
         model_path=vosk_punctuator_model_path,

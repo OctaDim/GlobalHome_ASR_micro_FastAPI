@@ -4,7 +4,7 @@ import threading
 import uvicorn
 from fastapi import FastAPI
 
-from configs.settings import API_CONFIGS
+from configs.settings import API_HOST, API_PORT
 from fast_api.app_vosk.routers_vosk import router_vosk
 
 
@@ -17,8 +17,8 @@ def create_fastapi_app():
 def run_uvicorn_fastapi_server():
     uvicorn.run(app=create_fastapi_app(),
                 # app="main:create_fastapi_app",  # literal func call is necessary if server reload=True when code changing
-                host=API_CONFIGS.BASE_HOST,
-                port=API_CONFIGS.BASE_PORT,
+                host=API_HOST,
+                port=API_PORT,
                 # reload=True,
                 # factory=True,
                 use_colors=True)
@@ -43,12 +43,12 @@ async def run_task_3():
         await asyncio.sleep(30)
 
 
-
 async def run_tasks():
     task_1 = asyncio.create_task(run_task_1())
     task_2 = asyncio.create_task(run_task_2())
     task_3 = asyncio.create_task(run_task_3())
     await asyncio.gather(task_1, task_2, task_3)
+
 
 if __name__ == "__main__":
     uvicorn_server_thread = threading.Thread(

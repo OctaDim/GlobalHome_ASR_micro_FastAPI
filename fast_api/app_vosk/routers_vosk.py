@@ -8,7 +8,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 
 from configs.console_colors import CONSOLE_COLORS
-from configs.settings import API_CONFIGS, BASE_DIR
+from configs.settings import BASE_DIR, VOSK_OPTIONS
 from stt_VOSK.funcs_vosk import get_str_from_wav_vosk
 from stt_VOSK.init_vosk import vosk_model_instance
 from utils_async_common.async_remove_file_by_path import async_remove_file
@@ -16,7 +16,8 @@ from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav
 from utils_common.normalized_path import (
     get_full_dir_normal_path, get_full_file_normal_path)
 
-vosk_base_url_name = API_CONFIGS.VOSK_API_URL_BASE_NAME
+
+vosk_base_url_name = VOSK_OPTIONS.VOSK_API_URL_BASE_NAME
 router_vosk = APIRouter(prefix=f"/{vosk_base_url_name}", tags=["VOSK"])
 
 
@@ -26,7 +27,7 @@ async def vosk_transcribe_audio_to_text(
         # TODO: username: Annotated[str, Depends(verify_auth_data)],
 ):
     print(f"\n{'#' * 95}")
-    allowed_audio_types = API_CONFIGS.VOSK_ALLOWED_AUDIO_TYPES
+    allowed_audio_types = VOSK_OPTIONS.VOSK_ALLOWED_AUDIO_TYPES
     if file.content_type not in allowed_audio_types:
         log_text = (f"Unsupported (audio file) media type [ERROR]: "
                     f"file.content_type: {file.content_type}, "
@@ -35,7 +36,7 @@ async def vosk_transcribe_audio_to_text(
         raise HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
                             detail=log_text)
 
-    allowed_extensions = API_CONFIGS.VOSK_ALLOWED_AUDIO_EXTENSIONS
+    allowed_extensions = VOSK_OPTIONS.VOSK_ALLOWED_AUDIO_EXTENSIONS
     if not file.filename.lower().endswith(allowed_extensions):
         log_text = (f"Media file (audio file) extension [ERROR]: "
                     f"file.filename: {file.filename}, "
@@ -46,11 +47,11 @@ async def vosk_transcribe_audio_to_text(
 
     try:
         dir_full_path = get_full_dir_normal_path(
-            all_dir_str_parts=[BASE_DIR, API_CONFIGS.API_IN_AUDIO_FILES_PATH])
+            all_dir_str_parts=[BASE_DIR, VOSK_OPTIONS.VOSK_API_IN_AUDIO_PATH])
         os.makedirs(dir_full_path, exist_ok=True)
 
         new_audio_full_path = get_full_file_normal_path(
-            all_dir_str_parts=[BASE_DIR, API_CONFIGS.API_IN_AUDIO_FILES_PATH],
+            all_dir_str_parts=[BASE_DIR, VOSK_OPTIONS.VOSK_API_IN_AUDIO_PATH],
             file_name_with_ext=file.filename)
 
         with open(new_audio_full_path, "wb") as new_audio_file:
@@ -63,8 +64,8 @@ async def vosk_transcribe_audio_to_text(
             prepared_sync_func = partial(
                 convert_and_save_mp3_to_wav,
                 mp3_full_path=new_audio_full_path,
-                wav_frame_rate=API_CONFIGS.VOSK_AUDIO_FRAME_RATE,
-                wav_channels=API_CONFIGS.VOSK_AUDIO_CHANNELS_NUM)
+                wav_frame_rate=VOSK_OPTIONS.VOSK_AUDIO_FRAME_RATE,
+                wav_channels=VOSK_OPTIONS.VOSK_AUDIO_CHANNELS_NUM)
             new_wav_full_path = await asyncio.to_thread(prepared_sync_func)
         else:  # Use existing .wav file
             new_wav_full_path = new_audio_full_path
@@ -88,18 +89,18 @@ async def vosk_transcribe_audio_to_text(
                      # TODO: "username": username,
                      "filename": file.filename,
                      "content type": file.content_type,
-                     "model init": API_CONFIGS.VOSK_MODEL_INIT,
-                     "model path": API_CONFIGS.VOSK_MODEL_PATH,
+                     "model init": VOSK_OPTIONS.VOSK_MODEL_INIT,
+                     "model path": VOSK_OPTIONS.VOSK_MODEL_PATH,
                      "recognition time": recognition_time,
                      "phrase": phrase, },
-            status_code=status.HTTP_200_OK, )
+            status_code=status.HTTP_200_OK,
+        )
 
-        print(f"VOSK response.body: {json_response.body}\n"
-              f"VOSK response.status_code {json_response.status_code}")
         blue_color = CONSOLE_COLORS.BRIGHT_BLUE
         reset_color = CONSOLE_COLORS.RESET
-        print(f"{blue_color}VOSK{reset_color} Recognized Phrase: "
-              f"{blue_color}{phrase}{reset_color}\n")
+        print(f"VOSK response.body: {json_response.body}\n"
+              f"VOSK response.status_code: {json_response.status_code}"
+              f"VOSK Recognized Phrase: {blue_color}{phrase}{reset_color}\n")
         return json_response
     except Exception as error:
         log_text = f"VOSK router [ERROR]: error: {error}"
