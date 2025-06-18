@@ -99,7 +99,7 @@ async def vosk_transcribe_audio_to_text(
         blue_color = CONSOLE_COLORS.BRIGHT_BLUE
         reset_color = CONSOLE_COLORS.RESET
         print(f"VOSK response.body: {json_response.body}\n"
-              f"VOSK response.status_code: {json_response.status_code}"
+              f"VOSK response.status_code: {json_response.status_code}\n"
               f"VOSK Recognized Phrase: {blue_color}{phrase}{reset_color}\n")
         return json_response
     except Exception as error:

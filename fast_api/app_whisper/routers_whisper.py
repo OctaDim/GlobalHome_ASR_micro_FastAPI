@@ -9,13 +9,12 @@ from fastapi.responses import JSONResponse
 
 from configs.console_colors import CONSOLE_COLORS
 from configs.settings import BASE_DIR, WHISPER_OPTIONS
-from stt_WHISPER.funcs_whisper import get_str_from_wav_whisper
+from stt_WHISPER.funcs_whisper import get_str_from_wav_whisper, async_get_str_from_wav_whisper
 from stt_WHISPER.init_whisper import whisper_model_instance
 from utils_async_common.async_remove_file_by_path import async_remove_file
-from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav
+from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav, async_convert_and_save_mp3_to_wav
 from utils_common.normalized_path import (
     get_full_dir_normal_path, get_full_file_normal_path)
-
 
 whisper_base_url_name = WHISPER_OPTIONS.WHISPER_API_URL_BASE_NAME
 router_whisper = APIRouter(prefix=f"/{whisper_base_url_name}", tags=["WHISPER"])
@@ -61,12 +60,10 @@ async def whisper_transcribe_audio_to_text(
         # Create new .wav file if .mp3 (audio/mp3, audio/mpeg)
         if (file.content_type in ["audio/mpeg", "audio/mp3", ]
                 and file.filename.lower().endswith(".mp3")):
-            prepared_sync_func = partial(
-                convert_and_save_mp3_to_wav,
+            new_wav_full_path = await async_convert_and_save_mp3_to_wav(
                 mp3_full_path=new_audio_full_path,
                 wav_frame_rate=WHISPER_OPTIONS.WHISPER_AUDIO_FRAME_RATE,
                 wav_channels=WHISPER_OPTIONS.WHISPER_AUDIO_CHANNELS_NUM)
-            new_wav_full_path = await asyncio.to_thread(prepared_sync_func)
         else:  # Use existing .wav file
             new_wav_full_path = new_audio_full_path
 
@@ -75,31 +72,29 @@ async def whisper_transcribe_audio_to_text(
 
         datetime_start = datetime.now()
 
-        # # ########################## VAR A (start) #########################
-        # # CONSISTENT MULTI WORKING with await async def async_get_str_from_wav_whisper()
-        # # no server error, but only consistent execution one after another
-        # transcribe_verbose = WHISPER_OPTIONS.WHISPER_TRANSCRIBE_VERBOSE
-        # phrase = await async_get_str_from_wav_whisper(
-        #     model_obj=whisper_model_instance,
-        #     full_file_path=new_wav_full_path,
-        #     language=use_language,
-        #     log_wav_path=True,
-        #     log_wav_duration=True,
-        #     transcribe_verbose=verbose_flag)
-        # # ########################## VAR A (end) ###########################
+        # ########################## VAR A (start) #######################
+        # CONSISTENT MULTI WORKING with await async def async_get_str_from_wav_whisper()
+        # no server error, but only consistent execution one after another
+        phrase = await async_get_str_from_wav_whisper(
+            model_obj=whisper_model_instance,
+            full_file_path=new_wav_full_path,
+            language=use_language,
+            log_wav_path=True,
+            log_wav_duration=True,
+            transcribe_verbose=verbose_flag)
+        # ########################## VAR A (end) #########################
 
         # ########################## VAR B (start) #######################
-        # NOT MULTI WORKING with asyncio.to_thread(get_str_from_wav_whisper())
-        # server error, one executes, others cause server error
-
-        prepared_sync_func = partial(get_str_from_wav_whisper,
-                                     model_obj=whisper_model_instance,
-                                     full_file_path=new_wav_full_path,
-                                     language=use_language,
-                                     log_wav_path=True,
-                                     log_wav_duration=True,
-                                     transcribe_verbose=verbose_flag)
-        phrase = await asyncio.to_thread(prepared_sync_func)  # Execute prepared func
+        # # NOT MULTI WORKING with asyncio.to_thread(get_str_from_wav_whisper())
+        # # server error, one executes, others cause server error
+        # prepared_sync_func = partial(get_str_from_wav_whisper,
+        #                              model_obj=whisper_model_instance,
+        #                              full_file_path=new_wav_full_path,
+        #                              language=use_language,
+        #                              log_wav_path=True,
+        #                              log_wav_duration=True,
+        #                              transcribe_verbose=verbose_flag)
+        # phrase = await asyncio.to_thread(prepared_sync_func)  # Execute prepared func
         # ########################## VAR B (end) #########################
 
         recognition_time = (datetime.now() - datetime_start).total_seconds()
@@ -124,7 +119,7 @@ async def whisper_transcribe_audio_to_text(
         blue_color = CONSOLE_COLORS.BRIGHT_BLUE
         reset_color = CONSOLE_COLORS.RESET
         print(f"WHISPER response.body: {json_response.body}\n"
-              f"WHISPER response.status_code: {json_response.status_code}"
+              f"WHISPER response.status_code: {json_response.status_code}\n"
               f"WHISPER Recognized Phrase: {blue_color}{phrase}{reset_color}\n")
         return json_response
     except Exception as error:
