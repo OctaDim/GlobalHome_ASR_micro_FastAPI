@@ -57,8 +57,7 @@ class WHISPER_MODEL_NAMES:
 
 @dataclass
 class API_CONFIGS:
-    INIT_VOSK_MODEL: bool = True
-    # INIT_VOSK_MODEL: bool = False
+    VOSK_MODEL_INIT: bool = True
     VOSK_MODEL_PATH: str = VOSK_MODEL_PATHS.BIG_3_5GB_RU_010
     VOSK_AUDIO_FRAME_RATE: int = 16000
     VOSK_AUDIO_CHANNELS_NUM: int = 1
@@ -66,12 +65,10 @@ class API_CONFIGS:
     VOSK_ALLOWED_AUDIO_EXTENSIONS: tuple = (".wav", ".mp3",)
     VOSK_API_URL_BASE_NAME: str = "vosk"
 
-    # INIT_VOSK_PUNCTUATOR_MODEL = True
-    INIT_VOSK_PUNCTUATOR_MODEL: bool = False
+    VOSK_PUNCTUATOR_MODEL_INIT: bool = False
     VOSK_PUNCTUATOR_MODEL_PATH: str = VOSK_MODEL_PATHS.RECASEPUNC_2GB_RU_022
 
-    INIT_WHISPER_MODEL: bool = True
-    # INIT_WHISPER_MODEL: bool = False
+    WHISPER_MODEL_INIT: bool = True
     WHISPER_MODEL_NAME: str = WHISPER_MODEL_NAMES.LARGE
     WHISPER_MODELS_DOWNLOAD_PATH: str = "stt_WHISPER/models_whisper"
     WHISPER_AUDIO_FRAME_RATE: int = 16000
@@ -79,7 +76,8 @@ class API_CONFIGS:
     WHISPER_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
     WHISPER_ALLOWED_AUDIO_EXTENSIONS: tuple = (".wav", ".mp3",)
     WHISPER_API_URL_BASE_NAME: str = "whisper"
-    WHISPER_TRANSCRIBE_VERBOSE: bool = True
+    WHISPER_TRANSCRIBE_VERBOSE: bool = False
+    WHISPER_TRANSCRIBE_LANGUAGE: str = "ru"
 
     SCRIPT_IN_AUDIO_FILES_PATH: str = "data_incoming/mp3_samples_KIROV"
     API_IN_AUDIO_FILES_PATH: str = "data_incoming/temporary_files_API"

@@ -58,7 +58,7 @@ def execute_scripts_vosk():
         if new_wav_full_path and os.path.exists(new_wav_full_path):
             os.remove(new_wav_full_path)
 
-        if API_CONFIGS.INIT_VOSK_PUNCTUATOR_MODEL and vosk_punctuator_inst:
+        if API_CONFIGS.VOSK_PUNCTUATOR_MODEL_INIT and vosk_punctuator_inst:
             try:
                 new_phrase = vosk_punctuator_inst.recase(phrase)
                 print(f"Punctuation [OK]: "

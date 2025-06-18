@@ -57,7 +57,7 @@ def init_vosk_punctuator_model(model_path: str,
     return model
 
 
-if API_CONFIGS.INIT_VOSK_PUNCTUATOR_MODEL:
+if API_CONFIGS.VOSK_PUNCTUATOR_MODEL_INIT:
     vosk_punctuator_model_path = get_full_dir_normal_path(
         [BASE_DIR, API_CONFIGS.VOSK_PUNCTUATOR_MODEL_PATH])
 

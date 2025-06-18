@@ -88,7 +88,7 @@ async def vosk_transcribe_audio_to_text(
                      # TODO: "username": username,
                      "filename": file.filename,
                      "content type": file.content_type,
-                     "model init": API_CONFIGS.INIT_VOSK_MODEL,
+                     "model init": API_CONFIGS.VOSK_MODEL_INIT,
                      "model path": API_CONFIGS.VOSK_MODEL_PATH,
                      "recognition time": recognition_time,
                      "phrase": phrase, },

@@ -62,7 +62,7 @@ def initialise_vosk_model(model_path: str,
     return model
 
 
-if API_CONFIGS.INIT_VOSK_MODEL:
+if API_CONFIGS.VOSK_MODEL_INIT:
     vosk_model_path = get_full_dir_normal_path(
         [BASE_DIR, API_CONFIGS.VOSK_MODEL_PATH])
 

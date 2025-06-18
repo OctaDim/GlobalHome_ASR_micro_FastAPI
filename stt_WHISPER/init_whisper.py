@@ -33,7 +33,7 @@ def initialise_whisper_model(model_name: str,
 
 whisper_model_instance = None
 
-if API_CONFIGS.INIT_WHISPER_MODEL:
+if API_CONFIGS.WHISPER_MODEL_INIT:
     whisper_model_path = get_full_dir_normal_path(
         [BASE_DIR, API_CONFIGS.WHISPER_MODELS_DOWNLOAD_PATH])
 
