@@ -16,7 +16,6 @@ from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav
 from utils_common.normalized_path import (
     get_full_dir_normal_path, get_full_file_normal_path)
 
-
 vosk_base_url_name = API_CONFIGS.VOSK_API_URL_BASE_NAME
 router_vosk = APIRouter(prefix=f"/{vosk_base_url_name}", tags=["VOSK"])
 
@@ -84,11 +83,7 @@ async def vosk_transcribe_audio_to_text(
         if new_audio_full_path != new_wav_full_path:
             await async_remove_file(new_wav_full_path)
 
-        blue_color = CONSOLE_COLORS.BRIGHT_BLUE
-        reset_color = CONSOLE_COLORS.RESET
-        print(f"VOSK Recognized Phrase: {blue_color}{phrase}{reset_color}\n")
-
-        return JSONResponse(
+        json_response = JSONResponse(
             content={"message": "VOSK: Audio file transcribed [OK]",
                      # TODO: "username": username,
                      "filename": file.filename,
@@ -98,6 +93,14 @@ async def vosk_transcribe_audio_to_text(
                      "recognition time": recognition_time,
                      "phrase": phrase, },
             status_code=status.HTTP_200_OK, )
+
+        print(f"VOSK response.body: {json_response.body}\n"
+              f"VOSK response.status_code {json_response.status_code}")
+        blue_color = CONSOLE_COLORS.BRIGHT_BLUE
+        reset_color = CONSOLE_COLORS.RESET
+        print(f"{blue_color}VOSK{reset_color} Recognized Phrase: "
+              f"{blue_color}{phrase}{reset_color}\n")
+        return json_response
     except Exception as error:
         log_text = f"VOSK router [ERROR]: error: {error}"
         print(log_text)

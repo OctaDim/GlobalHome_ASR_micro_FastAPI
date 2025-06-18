@@ -64,10 +64,10 @@ class API_CONFIGS:
     VOSK_AUDIO_CHANNELS_NUM: int = 1
     VOSK_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
     VOSK_ALLOWED_AUDIO_EXTENSIONS: tuple = (".wav", ".mp3",)
-    VOSK_API_URL_BASE_NAME = "vosk"
+    VOSK_API_URL_BASE_NAME: str = "vosk"
 
     # INIT_VOSK_PUNCTUATOR_MODEL = True
-    INIT_VOSK_PUNCTUATOR_MODEL = False
+    INIT_VOSK_PUNCTUATOR_MODEL: bool = False
     VOSK_PUNCTUATOR_MODEL_PATH: str = VOSK_MODEL_PATHS.RECASEPUNC_2GB_RU_022
 
     INIT_WHISPER_MODEL: bool = True
@@ -78,7 +78,8 @@ class API_CONFIGS:
     WHISPER_AUDIO_CHANNELS_NUM: int = 1
     WHISPER_ALLOWED_AUDIO_TYPES: tuple = ("audio/wav", "audio/mpeg", "audio/mp3",)
     WHISPER_ALLOWED_AUDIO_EXTENSIONS: tuple = (".wav", ".mp3",)
-    WHISPER_API_URL_BASE_NAME = "whisper"
+    WHISPER_API_URL_BASE_NAME: str = "whisper"
+    WHISPER_TRANSCRIBE_VERBOSE: bool = True
 
     SCRIPT_IN_AUDIO_FILES_PATH: str = "data_incoming/mp3_samples_KIROV"
     API_IN_AUDIO_FILES_PATH: str = "data_incoming/temporary_files_API"

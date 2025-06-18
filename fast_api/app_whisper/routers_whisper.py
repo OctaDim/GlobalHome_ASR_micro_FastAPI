@@ -16,7 +16,6 @@ from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav
 from utils_common.normalized_path import (
     get_full_dir_normal_path, get_full_file_normal_path)
 
-
 whisper_base_url_name = API_CONFIGS.WHISPER_API_URL_BASE_NAME
 router_whisper = APIRouter(prefix=f"/{whisper_base_url_name}", tags=["WHISPER"])
 
@@ -75,21 +74,26 @@ async def vosk_transcribe_audio_to_text(
         # # ########################## VAR A (start) #########################
         # # CONSISTENT MULTI WORKING with await async def async_get_str_from_wav_whisper()
         # # no server error, but only consistent execution one after another
+        # transcribe_verbose_log = API_CONFIGS.WHISPER_TRANSCRIBE_VERBOSE
         # phrase = await async_get_str_from_wav_whisper(
         #     model_obj=whisper_model_instance,
         #     full_file_path=new_wav_full_path,
         #     log_wav_path=True,
-        #     log_wav_duration=True)
+        #     log_wav_duration=True,
+        #     transcribe_verbose=transcribe_verbose_log)
         # # ########################## VAR A (end) ###########################
 
         # ########################## VAR B (start) #######################
         # NOT MULTI WORKING with asyncio.to_thread(get_str_from_wav_whisper())
         # server error, one executes, others cause server error
+
+        verbose_flag = API_CONFIGS.WHISPER_TRANSCRIBE_VERBOSE
         prepared_sync_func = partial(get_str_from_wav_whisper,
                                      model_obj=whisper_model_instance,
                                      full_file_path=new_wav_full_path,
                                      log_wav_path=True,
-                                     log_wav_duration=True)
+                                     log_wav_duration=True,
+                                     transcribe_verbose=verbose_flag)
         phrase = await asyncio.to_thread(prepared_sync_func)  # Execute prepared func
         # ########################## VAR B (end) #########################
 
@@ -100,11 +104,9 @@ async def vosk_transcribe_audio_to_text(
         if new_audio_full_path != new_wav_full_path:
             await async_remove_file(new_wav_full_path)
 
-        blue_color = CONSOLE_COLORS.BRIGHT_BLUE
-        reset_color = CONSOLE_COLORS.RESET
-        print(f"WHISPER Recognized Phrase:{blue_color}{phrase}{reset_color}\n")
 
-        return JSONResponse(
+
+        json_response = JSONResponse(
             content={"message": "WHISPER: Audio file transcribed [OK]",
                      # TODO: "username": username,
                      "filename": file.filename,
@@ -113,7 +115,15 @@ async def vosk_transcribe_audio_to_text(
                      "model path": API_CONFIGS.WHISPER_MODEL_NAME,
                      "recognition time": recognition_time,
                      "phrase": phrase, },
-            status_code=status.HTTP_200_OK,)
+            status_code=status.HTTP_200_OK, )
+
+        print(f"WHISPER response.body: {json_response.body}\n"
+              f"WHISPER response.status_code: {json_response.status_code}")
+        blue_color = CONSOLE_COLORS.BRIGHT_BLUE
+        reset_color = CONSOLE_COLORS.RESET
+        print(f"{blue_color}WHISPER{reset_color} Recognized Phrase: "
+              f"{blue_color}{phrase}{reset_color}\n")
+        return json_response
     except Exception as error:
         log_text = f"WHISPER router [ERROR]: error: {error}"
         print(log_text)

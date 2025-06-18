@@ -14,6 +14,7 @@ def get_str_from_wav_whisper(model_obj: Whisper,
                              full_file_path: str,
                              log_wav_path: bool = False,
                              log_wav_duration: bool = False,
+                             transcribe_verbose: bool = False,
                              ) -> str | None:
     if not model_obj:
         log_text = (f"WHISPER model init not switched on in settings.py [ERROR]: "
@@ -50,7 +51,8 @@ def get_str_from_wav_whisper(model_obj: Whisper,
             result_dict = model_obj.transcribe(
                 # audio=full_file_path,  # as full audio file path
                 audio=audio_numpy_arr_float32,  # as numpy float 32 array
-                verbose=True,
+                language="ru",
+                verbose=transcribe_verbose,
             )
 
             result_text = result_dict.get("text", "")
@@ -71,6 +73,7 @@ async def async_get_str_from_wav_whisper(model_obj: Whisper,
                                          full_file_path: str,
                                          log_wav_path: bool = False,
                                          log_wav_duration: bool = False,
+                                         transcribe_verbose: bool = False,
                                          ) -> str | tuple[str, str]:
     if not model_obj:
         log_text = (f"WHISPER model init not switched on in settings.py [ERROR]: "
@@ -106,7 +109,8 @@ async def async_get_str_from_wav_whisper(model_obj: Whisper,
             result_dict = model_obj.transcribe(
                 # audio=full_file_path,  # as full audio file path
                 audio=audio_numpy_arr_float32,  # as numpy float 32 array
-                verbose=True,
+                language="ru",
+                verbose=transcribe_verbose,
             )
 
             result_text = result_dict.get("text", "")
