@@ -26,6 +26,14 @@ def get_str_from_wav_vosk(model_obj: Model,
 
     try:
         with wave.open(full_file_path, 'rb') as wav_file:
+            if not wav_file:
+                log_text = (f"Request bad or zero length wav audio file [ERROR]: "
+                            f"full_file_path: {full_file_path}")
+                print(log_text)
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=log_text)
+
             frame_rate = wav_file.getframerate()
             frames_number = wav_file.getnframes()
             wav_duration = round(frames_number / frame_rate, 0)
