@@ -46,10 +46,10 @@ async def main():
                     async with aiohttp.request(method="POST",
                                                url=cur_api_url,
                                                data=form_data) as response:
-                        print(f"Request status: {response.status}")
+                        print(f"Request Status: {response.status}")
                         try:
                             json_response = await response.json()
-                            print(f"Request response: {json_response}\n")
+                            print(f"Request Response: {json_response}\n")
                         except Exception as error:
                             print(f"Request .json() [ERROR]: {error}")
                             try:
@@ -57,7 +57,7 @@ async def main():
                             except Exception as error:
                                 print(f"Request .text() [ERROR]: {error}")
                 except Exception as error:
-                    print(f"API request [ERROR]: {error}")
+                    print(f"API Test Request [ERROR]: {error}")
 
 
 if __name__ == "__main__":
