@@ -63,7 +63,8 @@ async def whisper_transcribe_audio_to_text(
             new_wav_full_path = await async_convert_and_save_mp3_to_wav(
                 mp3_full_path=new_audio_full_path,
                 wav_frame_rate=WHISPER_OPTIONS.WHISPER_AUDIO_FRAME_RATE,
-                wav_channels=WHISPER_OPTIONS.WHISPER_AUDIO_CHANNELS_NUM)
+                wav_channels=WHISPER_OPTIONS.WHISPER_AUDIO_CHANNELS_NUM,
+                temp_str="temp_wav_whisper")
         else:  # Use existing .wav file
             new_wav_full_path = new_audio_full_path
 

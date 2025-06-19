@@ -66,7 +66,8 @@ async def vosk_transcribe_audio_to_text(
             new_wav_full_path = await async_convert_and_save_mp3_to_wav(
                 mp3_full_path=new_audio_full_path,
                 wav_frame_rate=VOSK_OPTIONS.VOSK_AUDIO_FRAME_RATE,
-                wav_channels=VOSK_OPTIONS.VOSK_AUDIO_CHANNELS_NUM)
+                wav_channels=VOSK_OPTIONS.VOSK_AUDIO_CHANNELS_NUM,
+                temp_str="temp_wav_vosk")
             # prepared_sync_func = partial(
             #     convert_and_save_mp3_to_wav,
             #     mp3_full_path=new_audio_full_path,

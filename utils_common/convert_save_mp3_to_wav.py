@@ -6,15 +6,18 @@ from pydub import AudioSegment
 from utils_common.normalized_path import get_full_file_normal_path
 
 
-def convert_and_save_mp3_to_wav(mp3_full_path: str,
-                                wav_frame_rate: int = 16000,
-                                wav_channels: int = 1) -> str | None:
+def convert_and_save_mp3_to_wav(
+        mp3_full_path: str,
+        wav_frame_rate: int = 16000,
+        wav_channels: int = 1,
+        temp_str: str = "temp"
+) -> str | None:
     cur_dir_name = os.path.dirname(mp3_full_path)
     cur_mp3_name_with_ext = os.path.basename(mp3_full_path)
     cur_mp3_name_no_ext = os.path.splitext(cur_mp3_name_with_ext)[0]
 
     temp_id_str = datetime.now().strftime("%M%S%f")
-    new_wav_name_no_ext = f"{cur_mp3_name_no_ext}_temp_{temp_id_str}"
+    new_wav_name_no_ext = f"{cur_mp3_name_no_ext}_{temp_str}_{temp_id_str}"
     new_wav_name = f"{new_wav_name_no_ext}.wav"
     new_wav_full_path = get_full_file_normal_path(
         all_dir_str_parts=[cur_dir_name, ],
@@ -58,13 +61,15 @@ def convert_and_save_mp3_to_wav(mp3_full_path: str,
 async def async_convert_and_save_mp3_to_wav(
         mp3_full_path: str,
         wav_frame_rate: int = 16000,
-        wav_channels: int = 1) -> str | None:
+        wav_channels: int = 1,
+        temp_str: str = "temp"
+) -> str | None:
     cur_dir_name = os.path.dirname(mp3_full_path)
     cur_mp3_name_with_ext = os.path.basename(mp3_full_path)
     cur_mp3_name_no_ext = os.path.splitext(cur_mp3_name_with_ext)[0]
 
     temp_id_str = datetime.now().strftime("%M%S%f")
-    new_wav_name_no_ext = f"{cur_mp3_name_no_ext}_temp_{temp_id_str}"
+    new_wav_name_no_ext = f"{cur_mp3_name_no_ext}_{temp_str}_{temp_id_str}"
     new_wav_name = f"{new_wav_name_no_ext}.wav"
     new_wav_full_path = get_full_file_normal_path(
         all_dir_str_parts=[cur_dir_name, ],
