@@ -3,8 +3,15 @@ from pathlib import Path
 
 import aiohttp
 
+from utils_common.dir_files_names_paths import get_dir_files_full_paths
+from utils_common.normalized_path import get_full_dir_normal_path
 
-audio_file_full_paths = [
+
+BASE_DIR = r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI"
+ALL_INCOMING_AUDIO_TEST_DIR = r"data_incoming\mp3_samples_KIROV"  # Without starting "\"
+ALLOWED_AUDIO_TEST_EXTENSIONS = (".wav", ".mp3",)
+
+EXTRA_INCOMING_AUDIO_TEST_PATHS = [
     r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ffa2bea1_80f1_4bd1_a78a_78975fc0716c_2024_12_26_12_17_49_3_89235953249.mp3",
     r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ffa2bea1_80f1_4bd1_a78a_78975fc0716c_2024_12_26_12_17_49_3_89235953249.mp3",
     r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\ffa2bea1_80f1_4bd1_a78a_78975fc0716c_2024_12_26_12_17_49_3_89235953249.mp3",
@@ -15,7 +22,6 @@ audio_file_full_paths = [
     r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\15209673-6e15-40b0-be75-c24d4bbb9bfc_2025-05-19-15-43-36_79091447010_1000004.mp3",
     r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\KIROV_1_f61cbd53_89bd_4d5f_92e5_595ec3a5c882_2025_06_13_13_18_06_79165937387.mp3",
     r"C:\Users\dexp\Projects\GlobalHome_ASR_micro_FastAPI\data_incoming\mp3_samples_KIROV\KIROV_2_0ad4aa59_d022_476e_8b58_549beccb96be_2025_06_13_12_37_03_79823813009.mp3",
-
 ]
 
 API_URLS = [
@@ -26,10 +32,10 @@ API_URLS = [
 ]
 
 
-async def main():
+async def main(all_test_audio_paths: list):
     for cur_api_url in API_URLS:
         print("#" * 100)
-        for cur_file in audio_file_full_paths:
+        for cur_file in all_test_audio_paths:
             with open(cur_file, "rb") as audio_file:
                 try:
                     form_data = aiohttp.FormData()
@@ -61,4 +67,21 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    full_dir_path = get_full_dir_normal_path(
+        all_dir_str_parts=[BASE_DIR, ALL_INCOMING_AUDIO_TEST_DIR])
+
+    all_files_paths = get_dir_files_full_paths(full_dir_path)
+
+    all_audio_files_paths = []
+    for cur_file_path in all_files_paths:
+        if cur_file_path.endswith(ALLOWED_AUDIO_TEST_EXTENSIONS):
+            all_audio_files_paths.append(cur_file_path)
+
+    all_audio_files_paths.extend(EXTRA_INCOMING_AUDIO_TEST_PATHS)
+
+    if not all_audio_files_paths:
+        print(f"No files in settings defined directory "
+              f"WHISPER_OPTIONS.SCRIPT_IN_AUDIO_FILES_PATH [ERROR]: "
+              f"{ALL_INCOMING_AUDIO_TEST_DIR}\n")
+    else:
+        asyncio.run(main(all_test_audio_paths=all_audio_files_paths))
