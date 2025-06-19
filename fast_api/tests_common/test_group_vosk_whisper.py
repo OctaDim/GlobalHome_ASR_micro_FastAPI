@@ -19,10 +19,10 @@ audio_file_full_paths = [
 ]
 
 API_URLS = [
-    # f"http://176.124.136.4:8000/vosk/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
-    # f"http://176.124.136.4:8000/whisper/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
-    f"http://192.168.0.117:8000/vosk/transcribe/",  # Local Dexp API VOSK-WHISPER
-    f"http://192.168.0.117:8000/whisper/transcribe/",  # Local Dexp API VOSK-WHISPER
+    f"http://176.124.136.4:8000/vosk/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
+    f"http://176.124.136.4:8000/whisper/transcribe/",  # Server 176.124.136.4 API VOSK-WHISPER
+    # f"http://192.168.0.117:8000/vosk/transcribe/",  # Local Dexp API VOSK-WHISPER
+    # f"http://192.168.0.117:8000/whisper/transcribe/",  # Local Dexp API VOSK-WHISPER
 ]
 
 
