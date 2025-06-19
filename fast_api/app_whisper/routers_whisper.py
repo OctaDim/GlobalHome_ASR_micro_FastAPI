@@ -1,20 +1,20 @@
-import asyncio
-import os
 from datetime import datetime
-from functools import partial
 from typing import Annotated
 
+import aiofiles
+from aiofiles import os as aio_os
 from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 
 from configs.console_colors import CONSOLE_COLORS
 from configs.settings import BASE_DIR, WHISPER_OPTIONS
-from stt_WHISPER.funcs_whisper import get_str_from_wav_whisper, async_get_str_from_wav_whisper
+from stt_WHISPER.funcs_whisper import async_get_str_from_wav_whisper
 from stt_WHISPER.init_whisper import whisper_model_instance
-from utils_async_common.async_remove_file_by_path import async_remove_file
-from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav, async_convert_and_save_mp3_to_wav
+from utils_common.async_remove_file_by_path import async_remove_file
+from utils_common.convert_save_mp3_to_wav import async_convert_and_save_mp3_to_wav
 from utils_common.normalized_path import (
     get_full_dir_normal_path, get_full_file_normal_path)
+
 
 whisper_base_url_name = WHISPER_OPTIONS.WHISPER_API_URL_BASE_NAME
 router_whisper = APIRouter(prefix=f"/{whisper_base_url_name}", tags=["WHISPER"])
@@ -47,15 +47,15 @@ async def whisper_transcribe_audio_to_text(
     try:
         dir_full_path = get_full_dir_normal_path(
             all_dir_str_parts=[BASE_DIR, WHISPER_OPTIONS.WHISPER_API_IN_AUDIO_PATH])
-        os.makedirs(dir_full_path, exist_ok=True)
+        await aio_os.makedirs(dir_full_path, exist_ok=True)
 
         new_audio_full_path = get_full_file_normal_path(
             all_dir_str_parts=[BASE_DIR, WHISPER_OPTIONS.WHISPER_API_IN_AUDIO_PATH],
             file_name_with_ext=file.filename)
 
-        with open(new_audio_full_path, "wb") as new_audio_file:
+        async with aiofiles.open(new_audio_full_path, "wb") as new_audio_file:
             upload_file_content = await file.read()
-            new_audio_file.write(upload_file_content)
+            await new_audio_file.write(upload_file_content)
 
         # Create new .wav file if .mp3 (audio/mp3, audio/mpeg)
         if (file.content_type in ["audio/mpeg", "audio/mp3", ]
@@ -71,9 +71,9 @@ async def whisper_transcribe_audio_to_text(
         use_language = WHISPER_OPTIONS.WHISPER_TRANSCRIBE_LANGUAGE
 
         datetime_start = datetime.now()
-
         # ########################## VAR A (start) #######################
         # CONSISTENT MULTI WORKING with await async def async_get_str_from_wav_whisper()
+        # GPU oriented, not CPU multithread realisation
         # no server error, but only consistent execution one after another
         phrase = await async_get_str_from_wav_whisper(
             model_obj=whisper_model_instance,
@@ -85,8 +85,9 @@ async def whisper_transcribe_audio_to_text(
         # ########################## VAR A (end) #########################
 
         # ########################## VAR B (start) #######################
-        # # NOT MULTI WORKING with asyncio.to_thread(get_str_from_wav_whisper())
-        # # server error, one executes, others cause server error
+        # NOT MULTI WORKING with asyncio.to_thread(get_str_from_wav_whisper())
+        # CPU multithread oriented, not GPU safe
+        # server error, one executes, others cause server error
         # prepared_sync_func = partial(get_str_from_wav_whisper,
         #                              model_obj=whisper_model_instance,
         #                              full_file_path=new_wav_full_path,
@@ -128,3 +129,11 @@ async def whisper_transcribe_audio_to_text(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=log_text)
+    finally:
+        # TODO: add func parameter to delete intermediate files anyway
+        # coro_tasks = []
+        # coro_tasks.append(async_remove_file(new_audio_full_path))
+        # if new_audio_full_path != new_wav_full_path:
+        #     coro_tasks.append(async_remove_file(new_wav_full_path))
+        # await asyncio.gather(*coro_tasks)
+        pass

@@ -1,9 +1,10 @@
 import asyncio
-import os
 from datetime import datetime
 from functools import partial
 from typing import Annotated
 
+import aiofiles
+from aiofiles import os as aio_os
 from fastapi import APIRouter, File, HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 
@@ -11,8 +12,8 @@ from configs.console_colors import CONSOLE_COLORS
 from configs.settings import BASE_DIR, VOSK_OPTIONS
 from stt_VOSK.funcs_vosk import get_str_from_wav_vosk
 from stt_VOSK.init_vosk import vosk_model_instance
-from utils_async_common.async_remove_file_by_path import async_remove_file
-from utils_common.convert_save_mp3_to_wav import convert_and_save_mp3_to_wav
+from utils_common.async_remove_file_by_path import async_remove_file
+from utils_common.convert_save_mp3_to_wav import async_convert_and_save_mp3_to_wav
 from utils_common.normalized_path import (
     get_full_dir_normal_path, get_full_file_normal_path)
 
@@ -48,25 +49,30 @@ async def vosk_transcribe_audio_to_text(
     try:
         dir_full_path = get_full_dir_normal_path(
             all_dir_str_parts=[BASE_DIR, VOSK_OPTIONS.VOSK_API_IN_AUDIO_PATH])
-        os.makedirs(dir_full_path, exist_ok=True)
+        await aio_os.makedirs(dir_full_path, exist_ok=True)
 
         new_audio_full_path = get_full_file_normal_path(
             all_dir_str_parts=[BASE_DIR, VOSK_OPTIONS.VOSK_API_IN_AUDIO_PATH],
             file_name_with_ext=file.filename)
 
-        with open(new_audio_full_path, "wb") as new_audio_file:
+        async with aiofiles.open(
+                file=new_audio_full_path, mode="wb") as new_audio_file:
             upload_file_content = await file.read()
-            new_audio_file.write(upload_file_content)
+            await new_audio_file.write(upload_file_content)
 
         # Create new .wav file if .mp3 (audio/mp3, audio/mpeg)
         if (file.content_type in ["audio/mpeg", "audio/mp3", ]
                 and file.filename.lower().endswith(".mp3")):
-            prepared_sync_func = partial(
-                convert_and_save_mp3_to_wav,
+            new_wav_full_path = await async_convert_and_save_mp3_to_wav(
                 mp3_full_path=new_audio_full_path,
                 wav_frame_rate=VOSK_OPTIONS.VOSK_AUDIO_FRAME_RATE,
                 wav_channels=VOSK_OPTIONS.VOSK_AUDIO_CHANNELS_NUM)
-            new_wav_full_path = await asyncio.to_thread(prepared_sync_func)
+            # prepared_sync_func = partial(
+            #     convert_and_save_mp3_to_wav,
+            #     mp3_full_path=new_audio_full_path,
+            #     wav_frame_rate=VOSK_OPTIONS.VOSK_AUDIO_FRAME_RATE,
+            #     wav_channels=VOSK_OPTIONS.VOSK_AUDIO_CHANNELS_NUM)
+            # new_wav_full_path = await asyncio.to_thread(prepared_sync_func)
         else:  # Use existing .wav file
             new_wav_full_path = new_audio_full_path
 
@@ -92,9 +98,8 @@ async def vosk_transcribe_audio_to_text(
                      "model init": VOSK_OPTIONS.VOSK_MODEL_INIT,
                      "model path": VOSK_OPTIONS.VOSK_MODEL_PATH,
                      "recognition time": recognition_time,
-                     "phrase": phrase, },
-            status_code=status.HTTP_200_OK,
-        )
+                     "phrase": phrase},
+            status_code=status.HTTP_200_OK)
 
         blue_color = CONSOLE_COLORS.BRIGHT_BLUE
         reset_color = CONSOLE_COLORS.RESET
@@ -108,3 +113,11 @@ async def vosk_transcribe_audio_to_text(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=log_text)
+    finally:
+        # TODO: add func parameter to delete intermediate files anyway
+        # coro_tasks = []
+        # coro_tasks.append(async_remove_file(new_audio_full_path))
+        # if new_audio_full_path != new_wav_full_path:
+        #     coro_tasks.append(async_remove_file(new_wav_full_path))
+        # await asyncio.gather(*coro_tasks)
+        pass
