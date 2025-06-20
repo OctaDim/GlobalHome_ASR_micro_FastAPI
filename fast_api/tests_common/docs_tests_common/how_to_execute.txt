@@ -1,0 +1,2 @@
+tests are possible to execute simultaneously,
+each test start as Current File if Pycharm is used
