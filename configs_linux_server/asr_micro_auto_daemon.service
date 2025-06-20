@@ -1,0 +1,13 @@
+[Unit]
+Description=GlobalHome_ASR_micro_FastAPI
+After=network.target
+
+[Service]
+User=octadim
+WorkingDirectory=/usr/local/GlobalHome_ASR_micro_FastAPI
+ExecStart=/usr/local/GlobalHome_ASR_micro_FastAPI/.venv310/bin/python3.10 -m /usr/local/GlobalHome_ASR_micro_FastAPI/main.py > /usr/local/GlobalHome_ASR_micro_FastAPI/logs/gb_asr_micro_fastapi.log 2>&1 &
+Restart=always
+RestartSec=180
+
+[Install]
+WantedBy=multi-user.target
