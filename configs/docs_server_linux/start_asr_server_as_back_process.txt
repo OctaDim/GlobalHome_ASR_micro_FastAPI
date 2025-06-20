@@ -1,0 +1,28 @@
+*** Инструкция от Димона (DM) по запуску ASR сервера, как фонового процесса ***
+
+- Создаем все директории для лог файла одним махом через флаг -p, иначе ловим ошибки:
+mkdir -p /usr/local/GlobalHome_ASR_micro_FastAPI/logs/
+
+- Для надежности заходим в директорию (проекта) запускаемого модуля Питона:
+cd cd /usr/local/GlobalHome_ASR_micro_FastAPI
+
+- Запускаем модуль питона:
+nohup /usr/local/GlobalHome_ASR_micro_FastAPI/.venv310/bin/python3.10 /usr/local/GlobalHome_ASR_micro_FastAPI/main.py > /usr/local/GlobalHome_ASR_micro_FastAPI/logs/gb_asr_micro_fastapi.log 2>&1 &
+Примечание:
+    - nohup - оставит процесс работать после выхода юзера из системы
+    - без флага -m, т.к. указываем абсолютный адрес и файл.py, а не имя без пути
+    - ">" перенаправляет логи stdout в лог-файл
+    - "2>&1"  2-это stderr (ошибки) направляет в тот же файл, что и stdout
+    - "&" - в фоне, чтобы не процесс не закрылся с окном терминала
+
+- Следить за изменениями логов в реальном времени:
+tail -f /usr/local/GlobalHome_ASR_micro_FastAPI/logs/gb_asr_micro_fastapi.log
+
+- Просмотреть процессы, которые слушают порт 8000:
+sudo lsof -i :8000
+
+- Остановить процесс по номеру PID:
+    - мягко закрыть (обычное штатное закрытие)
+            sudo kill <PID>
+    - жестко убить процесс (если завис наглухо)
+            sudo kill -9 <PID>
