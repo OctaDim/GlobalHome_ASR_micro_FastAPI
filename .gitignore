@@ -239,3 +239,5 @@ stt_VOSK/models_vosk/*
 stt_WHISPER/models_whisper/*
 data_outgoing/*
 .configs.ini
+
+data_incoming/mp3_samples_KIROV/*
