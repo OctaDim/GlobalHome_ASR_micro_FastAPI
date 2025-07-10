@@ -57,7 +57,7 @@ sudo journalctl -u asr_micro_auto_daemon -f
             - В выводе Loaded: ищем название <имя_службы>.service
 
 - Перезапуск службы-димона:
-sudo systemctl restart my_python_service
+sudo systemctl restart asr_micro_auto_daemon
 
 - Остановка службы-димона:
-sudo systemctl stop my_python_service
+sudo systemctl stop asr_micro_auto_daemon
