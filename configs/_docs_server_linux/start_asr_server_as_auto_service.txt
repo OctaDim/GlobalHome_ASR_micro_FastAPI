@@ -40,7 +40,13 @@ sudo systemctl enable asr_micro_auto_daemon
 - Проверяем статус запущенной службы (димона)
 sudo systemctl status asr_micro_auto_daemon
 
-- Смотрим логи ошибок и все логи консоли в онлайн режиме:
+- устанавливаем цветной вывод (необязательно, но информативнее)
+sudo apt install ccze
+
+- Смотрим логи ошибок и все логи консоли в онлайн режиме (ЦВЕТНОЙ ШРИФТ):
+sudo journalctl -u asr_micro_auto_daemon -f | ccze -A
+
+- Смотрим логи ошибок и все логи консоли в онлайн режиме (БЕЛЫЙ ШРИФТ):
 sudo journalctl -u asr_micro_auto_daemon -f
 
 - Посмотреть службу слушающую 8000 порт:

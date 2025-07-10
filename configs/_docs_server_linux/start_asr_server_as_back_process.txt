@@ -15,7 +15,13 @@ nohup /usr/local/GlobalHome_ASR_micro_FastAPI/.venv310/bin/python3.10 /usr/local
     - "2>&1"  2-это stderr (ошибки) направляет в тот же файл, что и stdout
     - "&" - в фоне, чтобы не процесс не закрылся с окном терминала
 
-- Следить за изменениями логов в реальном времени:
+- устанавливаем цветной вывод (необязательно, но информативнее)
+sudo apt install ccze
+
+- Следим за изменениями логов в реальном времени (ЦВЕТНОЙ ШРИФТ):
+tail -f /usr/local/GlobalHome_ASR_micro_FastAPI/logs/gb_asr_micro_fastapi.log | ccze -A
+
+- Следим за изменениями логов в реальном времени (БЕЛЫЙ ШРИФТ):
 tail -f /usr/local/GlobalHome_ASR_micro_FastAPI/logs/gb_asr_micro_fastapi.log
 
 - Просмотреть процессы, которые слушают порт 8000:
