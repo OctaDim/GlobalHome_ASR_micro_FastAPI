@@ -23,6 +23,7 @@ env = load_dotenv(normal_env_path)  # for future
 
 @dataclass
 class API_CONFIG_NAMES:
+    API_PROD_KIROV_SERVER_IP = "API_prod_server_172_19_201_24_8000"
     API_PRODUCT_SERVER_IP = "API_prod_server_176_124_136_4_8000"
     API_TEST_PORT_ANY_IP = "API_port_all_ips_0_0_0_0_8000"
     API_TEST_WIN_LOCALHOST = "API_win_localhost_127_0_0_1_8000"
@@ -38,6 +39,8 @@ api_configs.read(filenames=normal_env_path)
 get_cur_internal_ip(log_ip=True)
 cur_external_ip = get_cur_external_ip_via_google_dns(log_ip=True)
 
+if cur_external_ip == "172.19.201.24":
+    api_conf_name = API_CONFIG_NAMES.API_PROD_KIROV_SERVER_IP
 if cur_external_ip == "176.124.136.4":
     api_conf_name = API_CONFIG_NAMES.API_PRODUCT_SERVER_IP
 elif cur_external_ip == "192.168.0.117":
