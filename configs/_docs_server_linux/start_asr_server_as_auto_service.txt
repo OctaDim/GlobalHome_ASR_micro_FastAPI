@@ -16,6 +16,9 @@ ExecStart=/usr/local/GlobalHome_ASR_micro_FastAPI/.venv310/bin/python3.10 /usr/l
 Restart=always
 RestartSec=180
 Type=simple
+StandardOutput=journal
+StandardError=journal
+LogLevelMax=debug
 [Install]
 WantedBy=multi-user.target
 
@@ -44,10 +47,10 @@ sudo systemctl status asr_micro_auto_daemon
 sudo apt install ccze
 
 - Смотрим логи ошибок и все логи консоли в онлайн режиме (ЦВЕТНОЙ ШРИФТ):
-sudo journalctl -u asr_micro_auto_daemon -f | ccze -A
+sudo journalctl -u asr_micro_auto_daemon -f --all | ccze -A
 
 - Смотрим логи ошибок и все логи консоли в онлайн режиме (БЕЛЫЙ ШРИФТ):
-sudo journalctl -u asr_micro_auto_daemon -f
+sudo journalctl -u asr_micro_auto_daemon -f --all
 
 - Посмотреть службу слушающую 8000 порт:
     - Сначала узнать номер PID процесса, слушающего порт:
